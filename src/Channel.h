@@ -7,6 +7,8 @@
 
 #include "EventLoop.h"
 
+#include <functional>
+
 // Channel 负责事件分发
 // 每个Channel只负责一个fd
 class Channel {
@@ -16,17 +18,17 @@ class Channel {
   Channel(EventLoop *loop, int fd) : loopOwner_(loop), fd_(fd) {}
   void handleEvent();
 
-  events() const { return events_ };
-  set_events(int events) { events_ = events; }
-  revents() const { return revents_ };
-  set_revents(int revents) { revents_ = revents };
-  set_fd(int fd) {fd_ = fd; }
-  fd() const { return fd_; }
+  int events() const { return events_ };
+  void set_events(int events) { events_ = events; }
+  int revents() const { return revents_ };
+  void set_revents(int revents) { revents_ = revents };
+  void set_fd(int fd) {fd_ = fd; }
+  int fd() const { return fd_; }
 
   void enableReading() { events_ |= kReadEvent; update(); }
 
-  setReadCallback(EventCallback &cb) { readCallback_ = cb; }
-  setWriteCallback(EventCallback &cb) { writeCallback_ = cb; }
+  void setReadCallback(EventCallback &cb) { readCallback_ = cb; }
+  void setWriteCallback(EventCallback &cb) { writeCallback_ = cb; }
 
  private:
   const static int kNoneEvent = 0;
