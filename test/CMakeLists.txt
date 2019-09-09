@@ -1,0 +1,2 @@
+add_executable(channel_test Channel_test.cpp)
+target_link_libraries(channel_test single_thread_reactor)
