@@ -1,3 +1,6 @@
+#ifndef EPOLL_H
+#define EPOLL_H
+
 #include "src/EventLoop.h"
 #include "src/Channel.h"
 
@@ -20,3 +23,5 @@ class Epoll {
   int epfd_;
   std::vector<struct epoll_event> events_;  // 类里面放vector扩容问题?
 };
+
+#endif

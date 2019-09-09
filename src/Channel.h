@@ -8,6 +8,7 @@
 #include "EventLoop.h"
 
 #include <functional>
+#include <sys/epoll.h>
 
 // Channel 负责事件分发
 // 每个Channel只负责一个fd

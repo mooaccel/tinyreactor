@@ -4,6 +4,8 @@
 
 #include "Channel.h"
 
+#include <sys/epoll.h>
+
 void Channel::handleEvent() {
     // 检测有效性.
     if (revents_ & (POLLIN | POLLPRI | POLLRDHUP))
