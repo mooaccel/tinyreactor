@@ -8,7 +8,6 @@
 #include "EventLoop.h"
 
 #include <functional>
-#include <sys/epoll.h>
 
 // Channel 负责事件分发
 // 每个Channel只负责一个fd
@@ -19,22 +18,22 @@ class Channel {
   Channel(EventLoop *loop, int fd) : loopOwner_(loop), fd_(fd) {}
   void handleEvent();
 
-  int events() const { return events_ };
+  int events() const { return events_; }
   void set_events(int events) { events_ = events; }
-  int revents() const { return revents_ };
-  void set_revents(int revents) { revents_ = revents };
+  int revents() const { return revents_; }
+  void set_revents(int revents) { revents_ = revents; }
   void set_fd(int fd) {fd_ = fd; }
   int fd() const { return fd_; }
 
-  void enableReading() { events_ |= kReadEvent; update(); }
+  void enableReading();
 
-  void setReadCallback(EventCallback &cb) { readCallback_ = cb; }
-  void setWriteCallback(EventCallback &cb) { writeCallback_ = cb; }
+  void setReadCallback(EventCallback cb) { readCallback_ = cb; }
+  void setWriteCallback(EventCallback cb) { writeCallback_ = cb; }
 
  private:
-  const static int kNoneEvent = 0;
-  const static int kReadEvent = POLLIN | POLLPRI;
-  const static int kWriteEvent = POLLOUT;
+  static const int kNoneEvent;
+  static const int kReadEvent;
+  static const int kWriteEvent;
 
   void update();
 

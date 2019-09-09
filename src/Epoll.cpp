@@ -2,24 +2,27 @@
 
 #include "Channel.h"
 
+#include <vector>
+
 #include <cstdio>
 #include <cstring>
+#include <unistd.h>
 #include <sys/epoll.h>
 
 Epoll::Epoll(EventLoop *ownerLoop) :
     ownerLoop_(ownerLoop),
     epfd_(epoll_create(1024)),
-    events_(vector<struct epoll_event>(kInitEventListSize)) {  /* 1024 is just an hint for the kernel */ // from redis
+    events_(std::vector<struct epoll_event>(kInitEventListSize)) {  /* 1024 is just an hint for the kernel */ // from redis
 }
 
 Epoll::~Epoll() {
     ::close(epfd_);
 }
 
-int Epoll::poll(struct timeval *tvp, vector<Channel*> &activeChannels) {
+int Epoll::poll(struct timeval *tvp, std::vector<Channel*> &activeChannels) {
     int retval, numevents = 0;
     retval = ::epoll_wait(epfd_,
-                          events_,
+                          &*events_.begin(),
                           1024, // epoll_wait() 第三个参数怎么办?
                           tvp ? (tvp->tv_sec * 1000 + tvp->tv_usec / 1000) : -1);
     if (retval > 0) {
@@ -36,7 +39,7 @@ int Epoll::poll(struct timeval *tvp, vector<Channel*> &activeChannels) {
 
 void Epoll::updateChannelInEpoll(Channel *channel) {
     struct epoll_event event;
-    ::memset(&event, 0, sizeof event);
+    std::memset(&event, 0, sizeof event);
     event.events = channel->events();
     event.data.ptr = channel;
     int fd = channel->fd();

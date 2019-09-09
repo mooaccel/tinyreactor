@@ -5,8 +5,11 @@
 #include <map>
 
 #include <cstdio>
+#include <cstring>
 #include <unistd.h>
 #include <sys/timerfd.h>
+
+typedef std::function<void()> TimerCallback;
 
 void UserDefinePrint(const char* msg)
 {
@@ -26,14 +29,14 @@ class PeriodicTimer
       cb_(cb)
   {
     timerfdChannel_.setReadCallback(
-        std::bind(&PeriodicTimer::handleRead, this));
+        std::bind(PeriodicTimer::handleRead, this));
     timerfdChannel_.enableReading();
   }
 
   void setTimer()
   {
     struct itimerspec spec;
-    memset(&spec, 0, sizeof spec);
+    std::memset(&spec, 0, sizeof spec);
     spec.it_interval = toTimeSpec(interval_);
     spec.it_value = spec.it_interval;
     int ret = ::timerfd_settime(timerfd_, 0 /* relative timer */, &spec, NULL);
@@ -60,7 +63,7 @@ class PeriodicTimer
   static struct timespec toTimeSpec(double seconds)
   {
     struct timespec ts;
-    memset(&ts, 0, sizeof ts);
+    std::memset(&ts, 0, sizeof ts);
     const int64_t kNanoSecondsPerSecond = 1000000000;
     const int kMinInterval = 100000;
     int64_t nanoseconds = static_cast<int64_t>(seconds * kNanoSecondsPerSecond);

@@ -6,13 +6,17 @@
 
 #include <sys/epoll.h>
 
+const int Channel::kNoneEvent = 0;
+const int Channel::kReadEvent = EPOLLIN | EPOLLPRI;
+const int Channel::kWriteEvent = EPOLLOUT;
+
 void Channel::handleEvent() {
     // 检测有效性.
-    if (revents_ & (POLLIN | POLLPRI | POLLRDHUP))
+    if (revents_ & (EPOLLIN | EPOLLPRI | EPOLLRDHUP))
     {
         if (readCallback_) readCallback_();
     }
-    if (revents_ & POLLOUT)
+    if (revents_ & EPOLLOUT)
     {
         if (writeCallback_) writeCallback_();
     }
@@ -20,4 +24,9 @@ void Channel::handleEvent() {
 
 void Channel::update() {
     loopOwner_->updateChannel(this);
+}
+
+void Channel::enableReading() { 
+    events_ |= kReadEvent; 
+    update(); 
 }

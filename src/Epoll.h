@@ -13,7 +13,7 @@ class Epoll {
   Epoll(EventLoop *ownerLoop);
   ~Epoll();
 
-  int poll(struct timeval *tvp, std::vector<Channel> &activeChannels);
+  int poll(struct timeval *tvp, std::vector<Channel*> &activeChannels);
   void updateChannelInEpoll(Channel *channel);
   void removeChannelInEpoll(Channel *channel);
 
