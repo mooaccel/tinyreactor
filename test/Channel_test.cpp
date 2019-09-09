@@ -1,3 +1,4 @@
+#include "../src/Epoll.h"
 #include "../src/Channel.h"
 #include "../src/EventLoop.h"
 
@@ -29,7 +30,7 @@ class PeriodicTimer
       cb_(cb)
   {
     timerfdChannel_.setReadCallback(
-        std::bind(PeriodicTimer::handleRead, this));
+        std::bind(&PeriodicTimer::handleRead, this));
     timerfdChannel_.enableReading();
   }
 
@@ -42,7 +43,7 @@ class PeriodicTimer
     int ret = ::timerfd_settime(timerfd_, 0 /* relative timer */, &spec, NULL);
     if (ret)
     {
-      std::fprintf("timerfd_settime() error.\n");
+      std::fprintf(stderr, "timerfd_settime() error.\n");
     }
   }
 
@@ -80,7 +81,7 @@ class PeriodicTimer
                                      TFD_NONBLOCK | TFD_CLOEXEC);
       if (timerfd < 0)
       {
-          std::fprintf("Failed in timerfd_create\n");
+          std::fprintf(stderr, "Failed in timerfd_create\n");
       }
       return timerfd;
   }

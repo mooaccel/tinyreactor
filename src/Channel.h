@@ -27,8 +27,8 @@ class Channel {
 
   void enableReading();
 
-  void setReadCallback(EventCallback cb) { readCallback_ = cb; }
-  void setWriteCallback(EventCallback cb) { writeCallback_ = cb; }
+  void setReadCallback(EventCallback cb) { readCallback_ = std::move(cb); }
+  void setWriteCallback(EventCallback cb) { writeCallback_ = std::move(cb); }
 
  private:
   static const int kNoneEvent;
