@@ -1,10 +1,11 @@
 #ifndef EVENTLOOP_H
 #define EVENTLOOP_H
 
-#include "Epoll.h"
-
 #include <vector>
 #include <memory>
+
+class Channel;
+class Epoll;
 
 class EventLoop {
  public:

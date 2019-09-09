@@ -3,6 +3,7 @@
 #include "Channel.h"
 
 #include <cstdio>
+#include <cstring>
 #include <sys/epoll.h>
 
 Epoll::Epoll(EventLoop *ownerLoop) :
@@ -15,7 +16,7 @@ Epoll::~Epoll() {
     ::close(epfd_);
 }
 
-int Epoll::poll(struct timeval *tvp, vector<Channel> &activeChannels) {
+int Epoll::poll(struct timeval *tvp, vector<Channel*> &activeChannels) {
     int retval, numevents = 0;
     retval = ::epoll_wait(epfd_,
                           events_,
@@ -27,7 +28,7 @@ int Epoll::poll(struct timeval *tvp, vector<Channel> &activeChannels) {
         for (i = 0; i < numevents; ++i) {
             Channel *channel = static_cast<Channel *>(events_[i].data.ptr);
             channel->set_revents(events_[i].events);
-            activeChannels->push_back(channel);
+            activeChannels.push_back(channel);
         }
     }
     return numevents;

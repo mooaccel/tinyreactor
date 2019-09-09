@@ -1,19 +1,19 @@
 #ifndef EPOLL_H
 #define EPOLL_H
 
-#include "src/EventLoop.h"
-#include "src/Channel.h"
+#include "EventLoop.h"
 
 #include <vector>
 
 struct epoll_event;
+class Channel;
 
 class Epoll {
  public:
   Epoll(EventLoop *ownerLoop);
   ~Epoll();
 
-  int poll();
+  int poll(struct timeval *tvp, std::vector<Channel> &activeChannels);
   void updateChannelInEpoll(Channel *channel);
   void removeChannelInEpoll(Channel *channel);
 
