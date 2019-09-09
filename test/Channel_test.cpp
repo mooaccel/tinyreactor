@@ -96,7 +96,7 @@ class PeriodicTimer
 int main(int argc, char* argv[])
 {
   EventLoop loop;
-  PeriodicTimer periodicTimer(&loop, 1, std::bind(UserDefinePrint, "PeriodicTimer"));
+  PeriodicTimer periodicTimer(&loop, 10, std::bind(UserDefinePrint, "PeriodicTimer"));
   periodicTimer.setTimer();
   loop.loop();
 }

@@ -10,11 +10,14 @@ EventLoop::EventLoop() :
 }
 
 void EventLoop::loop() {
-    poller_->poll(nullptr, activeChannels_);
-    for (auto curChannel : activeChannels_) {
-        curChannel->handleEvent();
+    while (true) {
+        poller_->poll(nullptr, activeChannels_);
+        for (auto curChannel : activeChannels_) {
+            curChannel->handleEvent();
+        }
     }
 }
+
 void EventLoop::updateChannel(Channel *channel) {
     poller_->updateChannelInEpoll(channel);
 }
