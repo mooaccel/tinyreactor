@@ -3,16 +3,19 @@
 
 #include <vector>
 
-struct epoll_event;
 class Channel;
 class EventLoop;
+struct epoll_event;
 
 class Epoll {
  public:
   Epoll(EventLoop *ownerLoop);
   ~Epoll();
 
-  int poll(struct timeval *tvp, std::vector<Channel*> &activeChannels);
+  Epoll(const Epoll &) = delete;
+  Epoll &operator=(const Epoll &) = delete;
+
+  int poll(struct timeval *tvp, std::vector<Channel *> &activeChannels);
   void updateChannelInEpoll(Channel *channel);
   void removeChannelInEpoll(Channel *channel);
 

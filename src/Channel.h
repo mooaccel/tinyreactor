@@ -16,22 +16,42 @@ class Channel {
   using EventCallback = std::function<void()>;
 
   Channel(EventLoop *loop, int fd) : loopOwner_(loop), fd_(fd) {}
+  ~Channel() = default;
+
+  Channel(const Channel &) = delete;
+  Channel &operator=(const Channel &) = delete;
+
   void handleEvent();
 
   int events() const { return events_; }
   void set_events(int events) { events_ = events; }
   int revents() const { return revents_; }
   void set_revents(int revents) { revents_ = revents; }
-  void set_fd(int fd) {fd_ = fd; }
+  void set_fd(int fd) { fd_ = fd; }
   int fd() const { return fd_; }
 
   void remove();  // 这个API设计的...感觉并不好
 
-  void enableReading() { events_ |= kReadEvent; update(); }
-  void disableReading() { events_ &= ~kReadEvent; update(); }
-  void enableWriting() { events_ |= kWriteEvent; update(); }
-  void disableWriting() { events_ &= ~kWriteEvent; update(); }
-  void disableAll() { events_ = kNoneEvent; update(); }
+  void enableReading() {
+      events_ |= kReadEvent;
+      update();
+  }
+  void disableReading() {
+      events_ &= ~kReadEvent;
+      update();
+  }
+  void enableWriting() {
+      events_ |= kWriteEvent;
+      update();
+  }
+  void disableWriting() {
+      events_ &= ~kWriteEvent;
+      update();
+  }
+  void disableAll() {
+      events_ = kNoneEvent;
+      update();
+  }
   bool isWriting() const { return events_ & kWriteEvent; }
   bool isReading() const { return events_ & kReadEvent; }
 
