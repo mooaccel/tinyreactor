@@ -3,6 +3,7 @@
 //
 
 #include "Channel.h"
+#include "EventLoop.h"
 
 #include <sys/epoll.h>
 
@@ -26,7 +27,6 @@ void Channel::update() {
     loopOwner_->updateChannel(this);
 }
 
-void Channel::enableReading() { 
-    events_ |= kReadEvent; 
-    update(); 
+void Channel::remove() {
+    loopOwner_->removeChannel(this);
 }

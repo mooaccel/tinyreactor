@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include "Channel.h"
 
 class Channel;
 class Epoll;
@@ -12,6 +13,7 @@ class EventLoop {
   EventLoop();
   void loop();
   void updateChannel(Channel *channel);
+  void removeChannel(Channel *channel);
 
  private:
   std::vector<Channel*> activeChannels_;

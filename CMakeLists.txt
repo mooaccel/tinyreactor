@@ -16,14 +16,7 @@ endif()
 set(CXX_FLAGS
         -g
         -std=c++11
-        -I/root/reactor_cpp
         )
-
-set(INC_DIR
-        reactor_cpp)
-
-include_directories(${INC_DIR})
-
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)

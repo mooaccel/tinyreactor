@@ -5,9 +5,9 @@
 #ifndef REACTOR_CPP_SRC_CHANNEL_H_
 #define REACTOR_CPP_SRC_CHANNEL_H_
 
-#include "EventLoop.h"
-
 #include <functional>
+
+class EventLoop;
 
 // Channel 负责事件分发
 // 每个Channel只负责一个fd
@@ -25,7 +25,15 @@ class Channel {
   void set_fd(int fd) {fd_ = fd; }
   int fd() const { return fd_; }
 
-  void enableReading();
+  void remove();  // 这个API设计的...感觉并不好
+
+  void enableReading() { events_ |= kReadEvent; update(); }
+  void disableReading() { events_ &= ~kReadEvent; update(); }
+  void enableWriting() { events_ |= kWriteEvent; update(); }
+  void disableWriting() { events_ &= ~kWriteEvent; update(); }
+  void disableAll() { events_ = kNoneEvent; update(); }
+  bool isWriting() const { return events_ & kWriteEvent; }
+  bool isReading() const { return events_ & kReadEvent; }
 
   void setReadCallback(EventCallback cb) { readCallback_ = std::move(cb); }
   void setWriteCallback(EventCallback cb) { writeCallback_ = std::move(cb); }

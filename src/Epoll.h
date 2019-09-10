@@ -1,12 +1,11 @@
 #ifndef EPOLL_H
 #define EPOLL_H
 
-#include "EventLoop.h"
-
 #include <vector>
 
 struct epoll_event;
 class Channel;
+class EventLoop;
 
 class Epoll {
  public:

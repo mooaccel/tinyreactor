@@ -52,5 +52,10 @@ void Epoll::updateChannelInEpoll(Channel *channel) {
 }
 
 void Epoll::removeChannelInEpoll(Channel *channel) {
-    // temprary empty
+    int fd = channel->fd();
+    if (::epoll_ctl(epfd_, EPOLL_CTL_DEL, fd, nullptr) == -1)
+    {
+        std::fprintf(stderr, "epoll_ctl occur error in Epoll::updateChannelInEpoll()\n ");
+        // 应该终止吧?
+    }
 }
