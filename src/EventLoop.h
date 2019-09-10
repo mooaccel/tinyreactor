@@ -1,5 +1,5 @@
-#ifndef EVENTLOOP_H
-#define EVENTLOOP_H
+#ifndef SRC_EVENTLOOP_H
+#define SRC_EVENTLOOP_H
 
 #include <vector>
 #include <memory>
@@ -20,4 +20,4 @@ class EventLoop {
   std::unique_ptr<Epoll> poller_;  // std::unique 怎么命名好呢...
 };
 
-#endif
+#endif  // SRC_EVENTLOOP_H

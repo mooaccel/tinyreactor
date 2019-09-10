@@ -1,5 +1,5 @@
-#ifndef EPOLL_H
-#define EPOLL_H
+#ifndef SRC_EPOLL_H
+#define SRC_EPOLL_H
 
 #include <vector>
 
@@ -23,4 +23,4 @@ class Epoll {
   std::vector<struct epoll_event> events_;  // 类里面放vector扩容问题?
 };
 
-#endif
+#endif  // SRC_EPOLL_H

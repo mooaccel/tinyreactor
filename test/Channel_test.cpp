@@ -9,6 +9,7 @@
 #include <cstring>
 
 #include <time.h>
+#include <cinttypes>
 #include <unistd.h>
 #include <sys/timerfd.h>
 
@@ -41,7 +42,7 @@ class PeriodicTimer {
       }
       new_itimerspec.it_value.tv_sec = cur_timerspec.tv_sec + 2;  // 当前时间2秒后
       new_itimerspec.it_value.tv_nsec = cur_timerspec.tv_nsec;
-      new_itimerspec.it_interval.tv_sec = 1;  // interval为1秒
+      new_itimerspec.it_interval.tv_sec = interval_;
       new_itimerspec.it_interval.tv_nsec = 0;
       int ret = ::timerfd_settime(timerfd_,
                                   TFD_TIMER_ABSTIME /* absolute timer */,
@@ -58,8 +59,19 @@ class PeriodicTimer {
       ::close(timerfd_);
   }
 
+  void readTimerfd () {
+      uint64_t howmany;
+      ssize_t n = ::read(timerfd_, &howmany, sizeof howmany);
+      std::printf("read Timerfd" "%" PRIu64 "\n", howmany);
+      if (n != sizeof howmany)
+      {
+          std::fprintf(stderr, "read Timefd occur error!\n");
+      }
+  }
+
  private:
   void handleRead() {
+      readTimerfd();
       if (cb_)
           cb_();
   }
@@ -95,7 +107,7 @@ class PeriodicTimer {
 
 int main(int argc, char *argv[]) {
     EventLoop loop;
-    PeriodicTimer periodicTimer(&loop, 2, std::bind(UserDefinePrint, "PeriodicTimer"));
+    PeriodicTimer periodicTimer(&loop, 1, std::bind(UserDefinePrint, "PeriodicTimer"));
     periodicTimer.setTimer();
     loop.loop();
 }

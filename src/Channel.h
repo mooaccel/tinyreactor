@@ -2,8 +2,8 @@
 // Created by mojiajun on 2019/9/9.
 //
 
-#ifndef REACTOR_CPP_SRC_CHANNEL_H_
-#define REACTOR_CPP_SRC_CHANNEL_H_
+#ifndef SRC_CHANNEL_H_
+#define SRC_CHANNEL_H_
 
 #include <functional>
 
@@ -54,4 +54,4 @@ class Channel {
   EventCallback writeCallback_;
 };
 
-#endif //REACTOR_CPP_SRC_CHANNEL_H_
+#endif  // SRC_CHANNEL_H_
