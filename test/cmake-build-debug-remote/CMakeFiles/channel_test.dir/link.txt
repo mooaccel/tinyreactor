@@ -1,1 +1,0 @@
-/usr/bin/c++  -g  -rdynamic CMakeFiles/channel_test.dir/Channel_test.cpp.o  -o channel_test -lsingle_thread_reactor 
