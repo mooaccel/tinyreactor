@@ -1,0 +1,12 @@
+//
+// Created by 莫佳骏 on 2019/9/12.
+//
+
+#ifndef SINGLE_THREAD_REACTOR_SRC_TCPCONNECTION_H_
+#define SINGLE_THREAD_REACTOR_SRC_TCPCONNECTION_H_
+
+class TcpConnection {
+
+};
+
+#endif //SINGLE_THREAD_REACTOR_SRC_TCPCONNECTION_H_

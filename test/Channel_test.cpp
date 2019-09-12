@@ -62,7 +62,7 @@ class PeriodicTimer {
   void readTimerfd () {
       uint64_t howmany;
       ssize_t n = ::read(timerfd_, &howmany, sizeof howmany);
-      std::printf("read Timerfd" "%" PRIu64 "\n", howmany);
+      std::printf("read Timerfd " "%" PRIu64 "\n", howmany);
       if (n != sizeof howmany)
       {
           std::fprintf(stderr, "read Timefd occur error!\n");
@@ -71,7 +71,7 @@ class PeriodicTimer {
 
  private:
   void handleRead() {
-      readTimerfd();
+      //readTimerfd();
       if (cb_)
           cb_();
   }

@@ -40,7 +40,7 @@ int Epoll::poll(struct timeval *tvp, std::vector<Channel*> &activeChannels) {
 void Epoll::updateChannelInEpoll(Channel *channel) {
     struct epoll_event event;
     std::memset(&event, 0, sizeof event);
-    event.events = channel->events();
+    event.events = channel->events() | EPOLLET;
     event.data.ptr = channel;
     int fd = channel->fd();
 
