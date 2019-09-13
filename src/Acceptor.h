@@ -14,13 +14,17 @@ class Socket;
 
 class Acceptor {
  public:
+  using NewConnectionCallback = std::function<void>;
+
   Acceptor(const Acceptor &) = delete;
   Acceptor &operator=(const Acceptor &) = delete;
 
-  using std::function<void> NewConnectionCallback;
   Acceptor(EventLoop *loop, const InetAddress listenAddr);
   ~Acceptor();
   void listen();
+  void setNewConnectionCallback(const NewConnectionCallback &cb) {
+      newConnectionCallback_ = cb;
+  }
 
  private:
   handleRead();

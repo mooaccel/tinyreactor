@@ -5,9 +5,17 @@
 #ifndef SRC_INETADDRESS_H_
 #define SRC_INETADDRESS_H_
 
+#include "SocketOps.h"
+
+#include <string>
+#include <cstring>
+
 class InetAddress {
  public:
-  InetAddress(StringArg ip, uint16_t port, bool ipv6 = false);
+  InetAddress(std::string ip, uint16_t port) {
+      ::memset(&addr_, 0, sizeof addr_);  // 可以不用吗?
+      monoreator::sockets::fromIpPort(ip.c_str(), port, &addr_);
+  }
 
   void setSockAddr(const struct sockaddr_in &sockaddr4) {
       addr_ = sockaddr4;

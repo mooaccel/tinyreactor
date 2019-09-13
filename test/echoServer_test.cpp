@@ -12,8 +12,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-int numThreads = 0;
-
 class EchoServer
 {
  public:
@@ -24,8 +22,7 @@ class EchoServer
       server_.setConnectionCallback(
           std::bind(&EchoServer::onConnection, this, _1));
       server_.setMessageCallback(
-          std::bind(&EchoServer::onMessage, this, _1, _2, _3));
-      server_.setThreadNum(numThreads);
+          std::bind(&EchoServer::onMessage, this, _1, _2));
   }
 
   void startListen()
@@ -45,7 +42,7 @@ class EchoServer
       conn->send("hello\n");
   }
 
-  void onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp time)
+  void onMessage(const TcpConnectionPtr& conn, Buffer* buf)
   {
       string msg(buf->retrieveAllAsString());
       LOG_TRACE << conn->name() << " recv " << msg.size() << " bytes at " << time.toString();
@@ -69,7 +66,7 @@ int main(int argc, char* argv[])
 {
     std::cout << "sizeof TcpConnection = " << sizeof(TcpConnection);
     EventLoop loop;
-    InetAddress listenAddr(2000);
+    InetAddress listenAddr("127.0.0.1", 20000);
     EchoServer server(&loop, listenAddr);
     server.startListen();
 
