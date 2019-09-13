@@ -8,14 +8,17 @@
 class InetAddress;
 
 class Socket {
+ public:
   explicit Socket(int socket_fd) : socket_fd_(socket_fd) {
   }
   ~Socket();
   void bindAddress(const InetAddress &listenaddr);
-  void accept(InetAddress );
+  int accept(InetAddress *peeraddr);
   int fd() {
     return socket_fd_;
   }
+
+  void listen();
 
  private:
   int socket_fd_;

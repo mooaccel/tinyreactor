@@ -6,28 +6,28 @@
 #define SRC_TCPSERVER_H_
 
 #include "Callback.h"
+#include "Acceptor.h"  // 定义std::unique<Acceptor> acceptor_;需要
 
 #include <functional>
+#include <map>
 #include <memory>
 #include <string>
 
-class Acceptor;
 class EventLoop;
 class InetAddress;
-class TcpConnectionPtr;
 class Buffer;
 
 class TcpServer {
  public:
   TcpServer(const TcpServer &) = delete;
   TcpServer &operator=(const TcpServer &) = delete;
-  TcpServer(EventLoop *loop, InetAddress listenAddr, std::string servername);
-  ~TcpServer();
+  TcpServer(EventLoop *loop, const InetAddress &listenAddr, std::string servername);
+  ~TcpServer() = default;
 
   void startListen() {
-
+      acceptor_->listen();
   }
-  void newConnection(int sockfd, const InetAddress& peerAddr);
+  void newConnection(int connfd, const InetAddress &peerAddr);
   void setConnectionCallback(const ConnectionCallback &cb) {
       connectionCallback_ = cb;
   }
@@ -37,8 +37,8 @@ class TcpServer {
 
  private:
   EventLoop *loop_;
-  const string listenIpPort_;
-  const string servername_;
+  const std::string listenIpPort_;
+  const std::string servername_;
   int nextConnId_;
 
   std::unique_ptr<Acceptor> acceptor_;  // 直接用Acceptor不行吗?

@@ -5,22 +5,26 @@
 #ifndef SRC_INETADDRESS_H_
 #define SRC_INETADDRESS_H_
 
-#include "SocketOps.h"
-
 #include <string>
 #include <cstring>
 
+#include <netinet/in.h>
+
 class InetAddress {
  public:
-  InetAddress(std::string ip, uint16_t port) {
-      ::memset(&addr_, 0, sizeof addr_);  // 可以不用吗?
-      monoreator::sockets::fromIpPort(ip.c_str(), port, &addr_);
-  }
+  explicit InetAddress(std::string ip = "127.0.0.1", uint16_t port = 9877);
+
+  explicit InetAddress(const struct sockaddr_in& addr)
+      : addr_(addr)
+  { }
 
   void setSockAddr(const struct sockaddr_in &sockaddr4) {
       addr_ = sockaddr4;
   }
-  const struct sockaddr *getSockAddr() const { return sockets::sockaddr_cast(&addr_); }
+  //const struct sockaddr *getSockAddr() const { return monoreator::sockets::sockaddr_cast(&addr_); }
+  const struct sockaddr* getSockAddr() const;
+
+  std::string toIpPort() const;
 
  private:
   struct sockaddr_in addr_;

@@ -5,27 +5,37 @@
 #ifndef SINGLE_THREAD_REACTOR_SRC_TCPCONNECTION_H_
 #define SINGLE_THREAD_REACTOR_SRC_TCPCONNECTION_H_
 
+#include "Buffer.h"
 #include "Callback.h"
 
 #include <string>
 #include <memory>
+#include <vector>
 
 class EventLoop;
 class InetAddress;
 class Socket;
 class Channel;
+class Buffer;
 
-class TcpConnection {
+class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
  public:
-  TcpConnection(EventLoop *loop, std::string connname, int sockfd, InetAddress *localAddr, InetAddress peerAddr);
+  TcpConnection(EventLoop *loop,
+                               std::string connname,
+                               int connfd,
+                               const InetAddress &localAddr,
+                               const InetAddress &peerAddr);
   ~TcpConnection() = default;
 
+  void send(const std::string &message);
   void connectEstablished();
+  void handleRead();
+  const std::string &conname() const {
+      return connname_;
+  }
 
-  void setConnectionCallback(const ConnectionCallback& cb)
-  { connectionCallback_ = cb; }
-  void setMessageCallback(const MessageCallback& cb)
-  { messageCallback_ = cb; }
+  void setConnectionCallback(const ConnectionCallback &cb) { connectionCallback_ = cb; }
+  void setMessageCallback(const MessageCallback &cb) { messageCallback_ = cb; }
 
  private:
   EventLoop *loop_;
@@ -37,6 +47,7 @@ class TcpConnection {
 
   ConnectionCallback connectionCallback_;
   MessageCallback messageCallback_;
+  Buffer inputBuffer_;
 };
 
 using TcpConnectionPtr = std::shared_ptr<TcpConnection>;

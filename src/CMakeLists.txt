@@ -9,6 +9,8 @@ set(lib_SRCS
         TcpClient.cpp
         Connector.cpp
         TcpConnection.cpp
+        InetAddress.cpp
+        Buffer.cpp
         )
 
 add_library(single_thread_reactor ${lib_SRCS})
@@ -24,4 +26,6 @@ set(HEADERS
         TcpClient.h
         Connector.h
         TcpConnection.h
+        InetAddress.h
+        Buffer.h
         )

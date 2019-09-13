@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 project(single_thread_reactor C CXX)
+add_definitions(-std=c++14)
 
 enable_testing()
 
@@ -15,7 +16,6 @@ endif()
 
 set(CXX_FLAGS
         -g
-        -std=c++11
         )
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)

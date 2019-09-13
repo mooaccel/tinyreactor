@@ -5,6 +5,9 @@
 #include "TcpServer.h"
 
 #include "Acceptor.h"
+#include "InetAddress.h"
+#include "SocketOps.h"
+#include "TcpConnection.h"
 
 #include <iostream>
 #include <memory>
@@ -13,14 +16,15 @@
 
 using std::placeholders::_1;
 using std::placeholders::_2;
+using namespace monoreator;
 
-TcpServer::TcpServer(EventLoop *loop, InetAddress listenAddr, std::string servername) :
+TcpServer::TcpServer(EventLoop *loop, const InetAddress &listenAddr, std::string servername) :
     loop_(loop),
     listenIpPort_(listenAddr.toIpPort()),
     servername_(servername),
     nextConnId_(1),
     acceptor_(std::make_unique<Acceptor>(loop, listenAddr)) {
-    acceptor_->setNewConnectionCallback(std::bind(TcpServer::newConnection, this, _1, _2))
+    acceptor_->setNewConnectionCallback(std::bind(&TcpServer::newConnection, this, _1, _2));  // ?为什么要加上&
 }
 
 void TcpServer::newConnection(int connfd, const InetAddress &peerAddr) {
@@ -30,7 +34,7 @@ void TcpServer::newConnection(int connfd, const InetAddress &peerAddr) {
     snprintf(buf, sizeof(buf), "-%s#%d", listenIpPort_.c_str(), nextConnId_);
     ++nextConnId_;
     std::string connName = servername_ + buf;
-    InetAddress localAddr(sockets::getLocalAddr(connfd));
+    InetAddress localAddr(monoreator::sockets::getLocalAddr(connfd));
     TcpConnectionPtr conn(std::make_shared<TcpConnection>(loop_,  // 先暂时让它在IO Loop线程
                                                           connName,
                                                           connfd,
@@ -39,7 +43,5 @@ void TcpServer::newConnection(int connfd, const InetAddress &peerAddr) {
     connections_[connName] = conn;
     conn->setConnectionCallback(connectionCallback_);
     conn->setMessageCallback(messageCallback_);
-    conn->setCloseCallback(
-        std::bind(&TcpServer::removeConnection, this, _1));
     conn->connectEstablished();
 }

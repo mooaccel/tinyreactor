@@ -8,8 +8,13 @@
 #include "SocketOps.h"
 
 #include <cstring>
+#include <cstdio>
 
-void Socket::accept(InetAddress *peeraddr) {  // 成功之后把对端的信息填入到peeraddr
+#include <unistd.h>
+
+using namespace monoreator::sockets;
+
+int Socket::accept(InetAddress *peeraddr) {  // 成功之后把对端的信息填入到peeraddr
     struct sockaddr_in cliaddr;
     socklen_t cliaddrlen = static_cast<socklen_t>(sizeof cliaddr);
 
@@ -48,6 +53,7 @@ void Socket::accept(InetAddress *peeraddr) {  // 成功之后把对端的信息�
         }
     }
     peeraddr->setSockAddr(cliaddr);
+    return connfd;
 }
 
 void Socket::bindAddress(const InetAddress &listenaddr) {
@@ -55,5 +61,17 @@ void Socket::bindAddress(const InetAddress &listenaddr) {
     if (ret < 0)
     {
         fprintf(stderr, "Socket::bindAddress\n");
+    }
+}
+
+Socket::~Socket() {
+    ::close(socket_fd_);
+}
+
+void Socket::listen() {
+    int ret = ::listen(socket_fd_, SOMAXCONN);
+    if (ret < 0)
+    {
+        fprintf(stderr, "sockets::listen\n");
     }
 }

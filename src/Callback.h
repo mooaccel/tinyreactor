@@ -5,6 +5,11 @@
 #define SINGLE_THREAD_REACTOR_SRC_CALLBACK_H_
 
 #include <functional>
+#include <memory>
+
+class Buffer;
+class TcpConnection;
+using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
 
 using ConnectionCallback = std::function<void(const TcpConnectionPtr &)>;
 using MessageCallback  = std::function<void(const TcpConnectionPtr &, Buffer *)>;

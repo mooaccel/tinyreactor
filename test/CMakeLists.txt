@@ -1,8 +1,8 @@
-add_executable(channel_test Channel_test.cpp)
-target_link_libraries(channel_test single_thread_reactor)
+#add_executable(channel_test Channel_test.cpp)
+#target_link_libraries(channel_test single_thread_reactor)
 
 add_executable(echoServer_test echoServer_test.cpp)
 target_link_libraries(echoServer_test single_thread_reactor)
 
-add_executable(echoClient_test echoClient_test.cpp)
-target_link_libraries(echoClient_test single_thread_reactor)
+#add_executable(echoClient_test echoClient_test.cpp)
+#target_link_libraries(echoClient_test single_thread_reactor)

@@ -5,12 +5,16 @@
 #include "../src/TcpServer.h"
 #include "../src/EventLoop.h"
 #include "../src/InetAddress.h"
+#include "../src/TcpConnection.h"
 
 #include <iostream>
 #include <utility>
 
 #include <stdio.h>
 #include <unistd.h>
+
+using std::placeholders::_1;
+using std::placeholders::_2;
 
 class EchoServer
 {
@@ -24,6 +28,7 @@ class EchoServer
       server_.setMessageCallback(
           std::bind(&EchoServer::onMessage, this, _1, _2));
   }
+  ~EchoServer() = default;
 
   void startListen()
   {
@@ -34,27 +39,27 @@ class EchoServer
  private:
   void onConnection(const TcpConnectionPtr& conn)
   {
-      LOG_TRACE << conn->peerAddress().toIpPort() << " -> "
-                << conn->localAddress().toIpPort() << " is "
-                << (conn->connected() ? "UP" : "DOWN");
-      LOG_INFO << conn->getTcpInfoString();
+      //std::cout << conn->peerAddress().toIpPort() << " -> "
+      //          << conn->localAddress().toIpPort() << " is "
+      //          << (conn->connected() ? "UP" : "DOWN");
+      //std::cout << conn->getTcpInfoString();
 
-      conn->send("hello\n");
+      conn->send("hello from server\n");
   }
 
   void onMessage(const TcpConnectionPtr& conn, Buffer* buf)
   {
-      string msg(buf->retrieveAllAsString());
-      LOG_TRACE << conn->name() << " recv " << msg.size() << " bytes at " << time.toString();
-      if (msg == "exit\n")
-      {
-          conn->send("bye\n");
-          conn->shutdown();
-      }
-      if (msg == "quit\n")
-      {
-          loop_->quit();
-      }
+      std::string msg(buf->buffer_);
+      std::cout << conn->conname() << " recv " << msg.size() << " bytes" << '\n';
+      //if (msg == "exit\n")
+      //{
+      //    conn->send("bye\n");
+      //    conn->shutdown();
+      //}
+      //if (msg == "quit\n")
+      //{
+      //    loop_->quit();
+      //}
       conn->send(msg);
   }
 
@@ -66,7 +71,7 @@ int main(int argc, char* argv[])
 {
     std::cout << "sizeof TcpConnection = " << sizeof(TcpConnection);
     EventLoop loop;
-    InetAddress listenAddr("127.0.0.1", 20000);
+    InetAddress listenAddr("127.0.0.1", 9877);
     EchoServer server(&loop, listenAddr);
     server.startListen();
 

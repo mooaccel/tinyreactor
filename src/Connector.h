@@ -5,16 +5,16 @@
 #ifndef SINGLE_THREAD_REACTOR_SRC_CONNECTOR_H_
 #define SINGLE_THREAD_REACTOR_SRC_CONNECTOR_H_
 
+#include "InetAddress.h"
+
 class EventLoop;
-class InetAddress;
 
 class Connector {
  public:
   Connector(EventLoop *loop, const InetAddress &serverAddr);
  private:
   EventLoop *loop_;
-  InetAddress serverAddr_;
-
+  InetAddress serverAddr_;  // 这种光有前向声明不行吧?
 };
 
 #endif //SINGLE_THREAD_REACTOR_SRC_CONNECTOR_H_

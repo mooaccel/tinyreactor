@@ -4,5 +4,8 @@
 
 #include "Connector.h"
 
+#include "EventLoop.h"
+#include "InetAddress.h"
+
 Connector::Connector(EventLoop *loop, const InetAddress &serverAddr) : loop_(loop), serverAddr_(serverAddr) {
 }
