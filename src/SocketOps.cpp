@@ -48,7 +48,7 @@ void sockets::generateAddrfromIpPort(const char *ip, uint16_t port, struct socka
 void sockets::fromIpPort(const char *ip, uint16_t port,
                 struct sockaddr_in *addr) {
     addr->sin_family = AF_INET;
-    addr->sin_port = htonl(port);
+    addr->sin_port = htons(port);
     if (::inet_pton(AF_INET, ip, &addr->sin_addr) <= 0) {
         std::cout << "sockets::fromIpPort";
     }
