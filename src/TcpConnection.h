@@ -27,9 +27,11 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
                                const InetAddress &peerAddr);
   ~TcpConnection() = default;
 
+  void send(const void* data, size_t len);
   void send(const std::string &message);
   void connectEstablished();
   void handleRead();
+  void handleWrite();
   const std::string &conname() const {
       return connname_;
   }
@@ -48,6 +50,7 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
   ConnectionCallback connectionCallback_;
   MessageCallback messageCallback_;
   Buffer inputBuffer_;
+  Buffer outputBuffer_;
 };
 
 using TcpConnectionPtr = std::shared_ptr<TcpConnection>;

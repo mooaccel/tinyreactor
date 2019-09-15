@@ -7,13 +7,17 @@
 #include "Channel.h"
 #include "Socket.h"
 #include "Channel.h"
+#include "SocketOps.h"
 
 #include <functional>
 #include <iostream>
 #include <memory>
 
 #include <cstring>
+#include <cassert>
 #include <unistd.h>
+
+using namespace monoreator;
 
 TcpConnection::TcpConnection(EventLoop *loop,
                              std::string connname,
@@ -26,11 +30,10 @@ TcpConnection::TcpConnection(EventLoop *loop,
     channel_(std::make_unique<Channel>(loop, connfd)),
     localAddr_(localAddr),
     peerAddr_(peerAddr) {
-
     channel_->setReadCallback(
         std::bind(&TcpConnection::handleRead, this));
-    //channel_->setWriteCallback(
-    //    std::bind(&TcpConnection::handleWrite, this));
+    channel_->setWriteCallback(
+        std::bind(&TcpConnection::handleWrite, this));
     //channel_->setCloseCallback(
     //    std::bind(&TcpConnection::handleClose, this));
     //channel_->setErrorCallback(
@@ -44,26 +47,66 @@ void TcpConnection::connectEstablished() {
     connectionCallback_(shared_from_this()); // 建立完连接后,记录下连接的信息后,可以返回了,然后一层一层返回到epoll_wait()
 }
 
-void TcpConnection::handleRead() {
-    uint8_t buf[1024];
-    ::memset(buf, 0, 1024);
-    ssize_t n = read(channel_->fd(), buf, 1024);
-    for (int i = 0; i < 1024; ++i) {
-        inputBuffer_.buffer_[i] = buf[i];
-    }
+void TcpConnection::handleRead() {  // connfd可读
+    int savedErrno = 0;
+    ssize_t n = inputBuffer_.readFd(channel_->fd(), &savedErrno);
     if (n > 0) {
         messageCallback_(shared_from_this(), &inputBuffer_);
+    } else if (n == 0) {
+        //handleClose();
     } else {
+        errno = savedErrno;
         std::cout << "TcpConnection::handleRead";
+        //handleError();
+    }
+}
+
+void TcpConnection::handleWrite() {  // connfd可写
+    if (channel_->isMonitoringWritable()) {
+        ssize_t n = sockets::write(channel_->fd(),
+                                   outputBuffer_.peek(),
+                                   outputBuffer_.readableBytes());
+        if (n > 0) {
+            outputBuffer_.retrieve(n);  // 只是改变索引
+            if (outputBuffer_.readableBytes() == 0) {  // 应用缓冲区没有更多可以往socket内核缓冲区写的数据了.
+                channel_->disableWriting();  // 不再监视此socket上的可写状态.否则,epoll会检测此事件,然后返回,但是其实已经没有数据可以写入内核缓冲区
+            }
+        } else {
+            std::cerr << "TcpConnection::handleWrite" << '\n';
+        }
+    } else {
+        std::cerr << "Connection fd = " << channel_->fd()
+                  << "writable, but channel_->isMonitoringWritable() is false" << '\n';
+    }
+}
+
+void TcpConnection::send(const void *data, size_t len) {
+    ssize_t nwrote = 0;
+    size_t remaining = len;
+    // if no thing in output queue, try writing directly
+    if (!channel_->isMonitoringWritable() && outputBuffer_.readableBytes() == 0) {
+        nwrote = sockets::write(channel_->fd(), data, len);  // 只写一次
+        std::cout << "! TcpConnection::send() write " << nwrote << " into kernel buffer" << '\n';
+        if (nwrote >= 0) {
+            remaining = len - nwrote;
+        } else {  // nwrote < 0
+            nwrote = 0;
+            if (errno != EWOULDBLOCK) {
+                std::cout << "TcpConnection::send()";
+            }
+        }
+    }
+
+    assert(remaining <= len);
+    if (remaining > 0) {  // 还有剩下的没写完...(没写到socket的内核缓冲区)
+        outputBuffer_.append(static_cast<const char *>(data) + nwrote, remaining);  // 存到应用缓冲区里面
+        if (!channel_->isMonitoringWritable()) {
+            channel_->enableWriting();  // 让epoll监视这个socket可写的状态,只要可写,就会调用TcpConnection::handleWrite()
+        }
     }
 }
 
 void TcpConnection::send(const std::string &message) {
-    ssize_t nwrote;
-    nwrote = ::write(channel_->fd(), message.c_str(), message.size());
-    if (nwrote >= 0) {
-        // ...
-    } else {
-        fprintf(stderr, "TcpConnection::send\n");
-    }
+    send(message.data(), message.size());  // message.size() 不包括\0, 如"ab",返回2
 }
+

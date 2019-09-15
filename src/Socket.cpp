@@ -52,6 +52,7 @@ int Socket::accept(InetAddress *peeraddr) {  // 成功之后把对端的信息�
                 break;
         }
     }
+    setNonBlockAndCloseOnExec(connfd);
     peeraddr->setSockAddr(cliaddr);
     return connfd;
 }

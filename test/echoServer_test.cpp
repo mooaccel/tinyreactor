@@ -49,7 +49,8 @@ class EchoServer
 
   void onMessage(const TcpConnectionPtr& conn, Buffer* buf)
   {
-      std::string msg(buf->buffer_);
+      std::string msg(buf->retrieveAllAsString());
+      std::cout << msg << '\n';
       std::cout << conn->conname() << " recv " << msg.size() << " bytes" << '\n';
       //if (msg == "exit\n")
       //{

@@ -22,13 +22,18 @@ const struct sockaddr_in *sockaddr_in_cast(const struct sockaddr *addr);
 void fromIpPort(const char *ip, uint16_t port,
                 struct sockaddr_in *addr);
 
-void toIp(char* buf, size_t size,
-                   const struct sockaddr* addr);
+void toIp(char *buf, size_t size,
+          const struct sockaddr *addr);
 
 void toIpPort(char *buf, size_t size,
-                       const struct sockaddr *addr);
+              const struct sockaddr *addr);
 
 struct sockaddr_in getLocalAddr(int sockfd);
+
+void setNonBlockAndCloseOnExec(int sockfd);
+ssize_t read(int sockfd, void *buf, size_t count);
+ssize_t write(int sockfd, const void *buf, size_t count);
+ssize_t readv(int sockfd, const struct iovec *iov, int iovcnt);
 
 template<typename To, typename From>
 inline To implicit_cast(From const &f) {  // ?

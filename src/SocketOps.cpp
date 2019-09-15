@@ -8,8 +8,11 @@
 #include <cstring>
 #include <iostream>
 
+#include <unistd.h>
 #include <arpa/inet.h>  // ::inet_pton
 #include <netinet/in.h>  // sockaddr_in, sockaddr
+#include <fcntl.h>
+#include <sys/uio.h>
 
 using namespace monoreator;
 
@@ -46,7 +49,7 @@ void sockets::generateAddrfromIpPort(const char *ip, uint16_t port, struct socka
 }
 
 void sockets::fromIpPort(const char *ip, uint16_t port,
-                struct sockaddr_in *addr) {
+                         struct sockaddr_in *addr) {
     addr->sin_family = AF_INET;
     addr->sin_port = htons(port);
     if (::inet_pton(AF_INET, ip, &addr->sin_addr) <= 0) {
@@ -65,7 +68,7 @@ struct sockaddr_in sockets::getLocalAddr(int sockfd) {
 }
 
 void sockets::toIp(char *buf, size_t size,
-          const struct sockaddr *addr) {
+                   const struct sockaddr *addr) {
     if (addr->sa_family == AF_INET) {
         const struct sockaddr_in *addr4 = monoreator::sockets::sockaddr_in_cast(addr);
         ::inet_ntop(AF_INET, &addr4->sin_addr, buf, static_cast<socklen_t>(size));
@@ -75,10 +78,38 @@ void sockets::toIp(char *buf, size_t size,
 }
 
 void sockets::toIpPort(char *buf, size_t size,
-              const struct sockaddr *addr) {
+                       const struct sockaddr *addr) {
     monoreator::sockets::toIp(buf, size, addr);
     size_t end = ::strlen(buf);
     const struct sockaddr_in *addr4 = monoreator::sockets::sockaddr_in_cast(addr);
     uint16_t port = ntohs(addr4->sin_port);
     snprintf(buf + end, size - end, ":%u", port);
+}
+
+void sockets::setNonBlockAndCloseOnExec(int sockfd) {
+    // non-block
+    int flags = ::fcntl(sockfd, F_GETFL, 0);
+    flags |= O_NONBLOCK;
+    int ret = ::fcntl(sockfd, F_SETFL, flags);
+    // FIXME check
+
+    // close-on-exec
+    flags = ::fcntl(sockfd, F_GETFD, 0);
+    flags |= FD_CLOEXEC;
+    ret = ::fcntl(sockfd, F_SETFD, flags);
+    // FIXME check
+
+    (void) ret;
+}
+
+ssize_t sockets::write(int sockfd, const void *buf, size_t count) {
+    return ::write(sockfd, buf, count);
+}
+
+ssize_t sockets::read(int sockfd, void *buf, size_t count) {  // 暂时不用它  为啥const void *buf不行, write() 却可以?
+    return ::read(sockfd, buf, count);
+}
+
+ssize_t sockets::readv(int sockfd, const struct iovec *iov, int iovcnt) {
+    return ::readv(sockfd, iov, iovcnt);
 }
