@@ -13,6 +13,8 @@ Epoll::Epoll(EventLoop *ownerLoop) :
     ownerLoop_(ownerLoop),
     epfd_(epoll_create(1024)),
     events_(std::vector<struct epoll_event>(kInitEventListSize)) {  /* 1024 is just an hint for the kernel */ // from redis
+    // events_, epoll_wait()第二个参数, will contain the events that will be available for the caller.
+    // 存放epoll_wait()的结果的.
 }
 
 Epoll::~Epoll() {
