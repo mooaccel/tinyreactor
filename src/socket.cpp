@@ -2,10 +2,10 @@
 // Created by mojiajun on 2019/9/12.
 //
 
-#include "Socket.h"
+#include "socket.h"
 
-#include "InetAddress.h"
-#include "SocketOps.h"
+#include "inet_address.h"
+#include "socket_operations.h"
 
 #include <cstring>
 #include <cstdio>

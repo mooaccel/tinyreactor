@@ -5,7 +5,7 @@
 #ifndef SINGLE_THREAD_REACTOR_SRC_CONNECTOR_H_
 #define SINGLE_THREAD_REACTOR_SRC_CONNECTOR_H_
 
-#include "InetAddress.h"
+#include "inet_address.h"
 
 class EventLoop;
 

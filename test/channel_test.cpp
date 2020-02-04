@@ -1,6 +1,6 @@
-#include "../src/Epoll.h"
-#include "../src/Channel.h"
-#include "../src/EventLoop.h"
+#include "src/epoll.h"
+#include "src/channel.h"
+#include "src/event_loop.h"
 
 #include <functional>
 //#include <map>

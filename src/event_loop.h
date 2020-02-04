@@ -1,8 +1,8 @@
 #ifndef SRC_EVENTLOOP_H
 #define SRC_EVENTLOOP_H
 
-#include "Channel.h"
-#include "Epoll.h"  // class Epoll为啥不行?
+#include "channel.h"
+#include "epoll.h"  // class Epoll为啥不行?
 
 #include <vector>
 #include <memory>

@@ -1,30 +1,24 @@
 cmake_minimum_required(VERSION 2.6)
 
-project(single_thread_reactor C CXX)
-add_definitions(-std=c++14)
+project(tinyreactor)
 
-enable_testing()
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Release")
-endif()
+# gtest
+set(EXTERN_INCLUDE_PATH ~/.tinyproject_deps/include)
+set(EXTERN_LIB_PATH ~/.tinyproject_deps/lib)
 
-# only build examples if this is the main project
-if(CMAKE_PROJECT_NAME STREQUAL "muduo")
-    option(MUDUO_BUILD_EXAMPLES "Build Muduo examples" ON)
-endif()
+include_directories(${EXTERN_INCLUDE_PATH})
 
-set(CXX_FLAGS
-        -g
-        )
+message(STATUS "EXTERN_INCLUDE_PATH is " ${EXTERN_INCLUDE_PATH})
+message(STATUS "EXTERN_LIB_PATH is " ${EXTERN_LIB_PATH})
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
+# CMAKE_INSTALL_PREFIX 类似./configure --prefix里的prefix
+# 在本项目为了测试, 只是安装到了PROJECT_SOURCE_DIR
+set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
 include_directories(${PROJECT_SOURCE_DIR})
-
-string(TOUPPER ${CMAKE_BUILD_TYPE} BUILD_TYPE)
-message(STATUS "CXX_FLAGS = " ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_${BUILD_TYPE}})
 
 add_subdirectory(src)
 add_subdirectory(test)

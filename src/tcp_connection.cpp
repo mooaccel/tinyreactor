@@ -2,12 +2,12 @@
 // Created by 莫佳骏 on 2019/9/12.
 //
 
-#include "TcpConnection.h"
+#include "tcp_connection.h"
 
-#include "Channel.h"
-#include "Socket.h"
-#include "Channel.h"
-#include "SocketOps.h"
+#include "channel.h"
+#include "socket.h"
+#include "channel.h"
+#include "socket_operations.h"
 
 #include <functional>
 #include <iostream>

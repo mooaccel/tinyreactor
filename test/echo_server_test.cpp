@@ -2,10 +2,10 @@
 // Created by mojiajun on 2019/9/12.
 //
 
-#include "../src/TcpServer.h"
-#include "../src/EventLoop.h"
-#include "../src/InetAddress.h"
-#include "../src/TcpConnection.h"
+#include "src/tcp_server.h"
+#include "src/event_loop.h"
+#include "src/inet_address.h"
+#include "src/tcp_connection.h"
 
 #include <iostream>
 #include <utility>

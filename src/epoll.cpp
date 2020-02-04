@@ -1,6 +1,6 @@
-#include "Epoll.h"
+#include "epoll.h"
 
-#include "Channel.h"
+#include "channel.h"
 
 #include <vector>
 

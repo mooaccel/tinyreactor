@@ -2,10 +2,10 @@
 // Created by 莫佳骏 on 2019/9/12.
 //
 
-#include "../src/TcpClient.h"
+#include "src/tcp_client.h"
 
-#include "../src/EventLoop.h"
-#include "../src/InetAddress.h"
+#include "src/event_loop.h"
+#include "src/inet_address.h"
 
 #include <iostream>
 #include <utility>

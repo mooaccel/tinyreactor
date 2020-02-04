@@ -5,8 +5,8 @@
 #ifndef SRC_ACCEPTOR_H_
 #define SRC_ACCEPTOR_H_
 
-#include "Channel.h"
-#include "Socket.h"
+#include "channel.h"
+#include "socket.h"
 
 #include <functional>
 

@@ -2,11 +2,11 @@
 // Created by mojiajun on 2019/9/12.
 //
 
-#include "Acceptor.h"
+#include "acceptor.h"
 
-#include "Channel.h"
-#include "InetAddress.h"
-#include "SocketOps.h"
+#include "channel.h"
+#include "inet_address.h"
+#include "socket_operations.h"
 
 #include <functional>
 

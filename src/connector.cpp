@@ -2,10 +2,10 @@
 // Created by 莫佳骏 on 2019/9/12.
 //
 
-#include "Connector.h"
+#include "connector.h"
 
-#include "EventLoop.h"
-#include "InetAddress.h"
+#include "event_loop.h"
+#include "inet_address.h"
 
 Connector::Connector(EventLoop *loop, const InetAddress &serverAddr) : loop_(loop), serverAddr_(serverAddr) {
 }

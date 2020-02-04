@@ -1,8 +1,8 @@
 //
 // Created by Mo Jiajun on 2019/9/13.
 //
-#include "Buffer.h"
-#include "SocketOps.h"
+#include "buffer.h"
+#include "socket_operations.h"
 
 #include <cerrno>
 #include <sys/uio.h>

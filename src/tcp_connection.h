@@ -5,8 +5,8 @@
 #ifndef SINGLE_THREAD_REACTOR_SRC_TCPCONNECTION_H_
 #define SINGLE_THREAD_REACTOR_SRC_TCPCONNECTION_H_
 
-#include "Buffer.h"
-#include "Callback.h"
+#include "buffer.h"
+#include "callback.h"
 
 #include <string>
 #include <memory>

@@ -1,31 +1,18 @@
-set(lib_SRCS
-        Channel.cpp
-        EventLoop.cpp
-        Epoll.cpp
-        Acceptor.cpp
-        Socket.cpp
-        TcpServer.cpp
-        SocketOps.cpp
-        TcpClient.cpp
-        Connector.cpp
-        TcpConnection.cpp
-        InetAddress.cpp
-        Buffer.cpp
+project(tinyreactor_lib)
+
+set(TINYREACTOR_LIB_SRCS
+        channel.cpp
+        event_loop.cpp
+        epoll.cpp
+        acceptor.cpp
+        socket.cpp
+        tcp_server.cpp
+        socket_operations.cpp
+        tcp_client.cpp
+        connector.cpp
+        tcp_connection.cpp
+        inet_address.cpp
+        buffer.cpp
         )
 
-add_library(single_thread_reactor ${lib_SRCS})
-
-set(HEADERS
-        Channel.h
-        EventLoop.h
-        Epoll.h
-        Acceptor.h
-        Socket.h
-        TcpServer.h
-        SocketOps.h
-        TcpClient.h
-        Connector.h
-        TcpConnection.h
-        InetAddress.h
-        Buffer.h
-        )
+add_library(tinyreactor ${TINYREACTOR_LIB_SRCS})

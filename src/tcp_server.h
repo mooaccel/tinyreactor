@@ -5,8 +5,8 @@
 #ifndef SRC_TCPSERVER_H_
 #define SRC_TCPSERVER_H_
 
-#include "Callback.h"
-#include "Acceptor.h"  // 定义std::unique<Acceptor> acceptor_;需要
+#include "callback.h"
+#include "acceptor.h"  // 定义std::unique<Acceptor> acceptor_;需要
 
 #include <functional>
 #include <map>

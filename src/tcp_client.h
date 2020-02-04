@@ -5,7 +5,7 @@
 #ifndef SINGLE_THREAD_REACTOR_SRC_TCPCLIENT_H_
 #define SINGLE_THREAD_REACTOR_SRC_TCPCLIENT_H_
 
-#include "Connector.h"
+#include "connector.h"
 
 #include <string>
 

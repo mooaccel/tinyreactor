@@ -2,8 +2,8 @@
 // Created by 莫佳骏 on 2019/9/9.
 //
 
-#include "Channel.h"
-#include "EventLoop.h"
+#include "channel.h"
+#include "event_loop.h"
 
 #include <sys/epoll.h>
 
