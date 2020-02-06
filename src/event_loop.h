@@ -29,6 +29,9 @@ class EventLoop {
  private:
   std::vector<Channel *> activeChannels_;
   std::unique_ptr<Epoll> poller_;  // std::unique 怎么命名好呢...
+
+  // EventLoop拥有Timerqueue
+  // std::unique_ptr<TimerQueue> timerqueue_;
 };
 
 #endif  // SRC_EVENTLOOP_H

@@ -16,15 +16,18 @@ if (NOT GTEST_LIB)
 endif ()
 
 set(TIMESTAMP_TEST_SOURCE_FILES time_stamp_test.cpp)
+set(TIMER_TEST_SOURCE_FILES timer_test.cpp)
 
 #add_executable(channel_test Channel_test.cpp)
 #target_link_libraries(channel_test single_thread_reactor)
 
 add_executable(echoServer_test echo_server_test.cpp)
 add_executable(time_stamp_test ${TIMESTAMP_TEST_SOURCE_FILES})
+add_executable(timer_test ${TIMER_TEST_SOURCE_FILES})
 
 target_link_libraries(echoServer_test tinyreactor)
 target_link_libraries(time_stamp_test tinyreactor)
+target_link_libraries(timer_test tinyreactor)
 
 #add_executable(echoClient_test echoClient_test.cpp)
 #target_link_libraries(echoClient_test single_thread_reactor)
