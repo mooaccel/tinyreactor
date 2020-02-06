@@ -13,6 +13,7 @@ set(TINYREACTOR_LIB_SRCS
         tcp_connection.cpp
         inet_address.cpp
         buffer.cpp
+        ./util/time_stamp.cpp
         )
 
 add_library(tinyreactor ${TINYREACTOR_LIB_SRCS})

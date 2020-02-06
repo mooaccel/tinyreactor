@@ -3,6 +3,7 @@
 
 #include "channel.h"
 #include "epoll.h"  // class Epoll为啥不行?
+#include "util/time_stamp.h"
 
 #include <vector>
 #include <memory>
@@ -20,6 +21,10 @@ class EventLoop {
   void loop();
   void updateChannel(Channel *channel);
   void removeChannel(Channel *channel);
+
+  void runAt();
+  void runAfter();
+  void runEvery();
 
  private:
   std::vector<Channel *> activeChannels_;
