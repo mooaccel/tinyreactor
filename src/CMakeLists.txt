@@ -14,6 +14,8 @@ set(TINYREACTOR_LIB_SRCS
         inet_address.cpp
         buffer.cpp
         ./util/time_stamp.cpp
+        ./util/timer.cpp
+        ./util/timer_queue.cpp
         )
 
 add_library(tinyreactor ${TINYREACTOR_LIB_SRCS})

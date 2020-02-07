@@ -8,6 +8,7 @@
 #include <vector>
 #include <memory>
 #include <thread>
+#include <mutex>
 
 class Channel;
 
@@ -31,6 +32,7 @@ class EventLoop {
 
   void runInLoop(Functor functor);
   void queueInLoop(Functor functor);
+  void wakeupLoopThread();
 
   bool isInLoopThread();
   std::thread::id getThreadIdBelongTo() { return threadIdBelongTo_; }
@@ -40,6 +42,11 @@ class EventLoop {
   std::unique_ptr<Epoll> poller_;  // std::unique 怎么命名好呢...
 
   std::thread::id threadIdBelongTo_;
+  int wakeupFd_;
+  std::unique_ptr<Channel> wakeupChannel_;
+
+  std::mutex mutex_;
+  std::vector<Functor> pendingFunctors_;
 
   // EventLoop拥有Timerqueue
   // std::unique_ptr<TimerQueue> timerqueue_;

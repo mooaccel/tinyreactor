@@ -3,8 +3,11 @@
 #include "epoll.h"
 #include "channel.h"
 
+#include <iostream>
+#include <unistd.h>
 #include <memory>
 #include <cstdio>
+#include <mutex>
 
 EventLoop::EventLoop() :
     poller_(std::make_unique<Epoll>(this)),
@@ -31,11 +34,31 @@ void EventLoop::removeChannel(Channel *channel) {
 }
 
 void EventLoop::runInLoop(Functor functor) {
-
+    if (isInLoopThread()) {
+        functor();
+    } else {
+        queueInLoop(functor);
+    }
 }
 
+/// 也有可能在loop thread里面调用吗?
 void EventLoop::queueInLoop(Functor functor) {
+    {
+        std::lock_guard<std::mutex> lg(mutex_);
+        pendingFunctors_.push_back(functor);
+    }
+    // 如果不在loop thread
+    if (!isInLoopThread()) {
+        wakeupLoopThread();
+    }
+}
 
+void EventLoop::wakeupLoopThread() {
+    uint64_t one = 1;  // ?
+    ssize_t n = ::write(wakeupFd_, &one, sizeof one);
+    if (n != sizeof one) {
+        std::cout << "wakeupLoopThread fail" << '\n';
+    }
 }
 
 
