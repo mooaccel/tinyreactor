@@ -5,15 +5,6 @@ project(tinyreactor)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
-# gtest
-set(EXTERN_INCLUDE_PATH ~/.tinyproject_deps/include)
-set(EXTERN_LIB_PATH ~/.tinyproject_deps/lib)
-
-include_directories(${EXTERN_INCLUDE_PATH})
-
-message(STATUS "EXTERN_INCLUDE_PATH is " ${EXTERN_INCLUDE_PATH})
-message(STATUS "EXTERN_LIB_PATH is " ${EXTERN_LIB_PATH})
-
 # CMAKE_INSTALL_PREFIX 类似./configure --prefix里的prefix
 # 在本项目为了测试, 只是安装到了PROJECT_SOURCE_DIR
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})

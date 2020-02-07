@@ -7,7 +7,8 @@
 #include <cstdio>
 
 EventLoop::EventLoop() :
-    poller_(std::make_unique<Epoll>(this)) {
+    poller_(std::make_unique<Epoll>(this)),
+    threadIdBelongTo_(std::this_thread::get_id()) {
 }
 
 void EventLoop::loop() {
@@ -27,4 +28,17 @@ void EventLoop::updateChannel(Channel *channel) {
 
 void EventLoop::removeChannel(Channel *channel) {
     poller_->removeChannelInEpoll(channel);
+}
+
+void EventLoop::runInLoop(Functor functor) {
+
+}
+
+void EventLoop::queueInLoop(Functor functor) {
+
+}
+
+
+bool EventLoop::isInLoopThread() {
+    return threadIdBelongTo_ == std::this_thread::get_id();
 }

@@ -7,11 +7,13 @@
 
 #include <vector>
 #include <memory>
+#include <thread>
 
 class Channel;
 
 class EventLoop {
  public:
+  using Functor = std::function<void()>;
   EventLoop();
   ~EventLoop() = default;
 
@@ -25,10 +27,19 @@ class EventLoop {
   void runAt();
   void runAfter();
   void runEvery();
+  void cancelTimer();
+
+  void runInLoop(Functor functor);
+  void queueInLoop(Functor functor);
+
+  bool isInLoopThread();
+  std::thread::id getThreadIdBelongTo() { return threadIdBelongTo_; }
 
  private:
   std::vector<Channel *> activeChannels_;
   std::unique_ptr<Epoll> poller_;  // std::unique 怎么命名好呢...
+
+  std::thread::id threadIdBelongTo_;
 
   // EventLoop拥有Timerqueue
   // std::unique_ptr<TimerQueue> timerqueue_;
