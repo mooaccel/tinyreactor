@@ -12,6 +12,8 @@
 #include <memory>
 #include <vector>
 
+namespace tinyreactor {
+
 class EventLoop;
 class InetAddress;
 class Socket;
@@ -21,13 +23,13 @@ class Buffer;
 class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
  public:
   TcpConnection(EventLoop *loop,
-                               std::string connname,
-                               int connfd,
-                               const InetAddress &localAddr,
-                               const InetAddress &peerAddr);
+                std::string connname,
+                int connfd,
+                const InetAddress &localAddr,
+                const InetAddress &peerAddr);
   ~TcpConnection() = default;
 
-  void send(const void* data, size_t len);
+  void send(const void *data, size_t len);
   void send(const std::string &message);
   void connectEstablished();
   void handleRead();
@@ -55,4 +57,5 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
 
 using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
 
+}
 #endif //SINGLE_THREAD_REACTOR_SRC_TCPCONNECTION_H_

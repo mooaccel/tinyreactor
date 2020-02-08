@@ -9,6 +9,8 @@
 #include <cstdio>
 #include <mutex>
 
+using namespace tinyreactor;
+
 EventLoop::EventLoop() :
     poller_(std::make_unique<Epoll>(this)),
     threadIdBelongTo_(std::this_thread::get_id()) {
@@ -53,6 +55,10 @@ void EventLoop::queueInLoop(Functor functor) {
     }
 }
 
+void EventLoop::assertInLoopThread() {
+
+}
+
 void EventLoop::wakeupLoopThread() {
     uint64_t one = 1;  // ?
     ssize_t n = ::write(wakeupFd_, &one, sizeof one);
@@ -60,7 +66,6 @@ void EventLoop::wakeupLoopThread() {
         std::cout << "wakeupLoopThread fail" << '\n';
     }
 }
-
 
 bool EventLoop::isInLoopThread() {
     return threadIdBelongTo_ == std::this_thread::get_id();

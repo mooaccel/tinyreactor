@@ -7,5 +7,6 @@
 #include "event_loop.h"
 #include "inet_address.h"
 
-Connector::Connector(EventLoop *loop, const InetAddress &serverAddr) : loop_(loop), serverAddr_(serverAddr) {
-}
+using namespace tinyreactor;
+
+Connector::Connector(EventLoop *loop, const InetAddress &serverAddr) : loop_(loop), serverAddr_(serverAddr) {}

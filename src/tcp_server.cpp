@@ -16,7 +16,8 @@
 
 using std::placeholders::_1;
 using std::placeholders::_2;
-using namespace monoreator;
+
+using namespace tinyreactor;
 
 TcpServer::TcpServer(EventLoop *loop, const InetAddress &listenAddr, std::string servername) :
     loop_(loop),

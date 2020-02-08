@@ -5,6 +5,8 @@
 #ifndef SRC_SOCKET_H_
 #define SRC_SOCKET_H_
 
+namespace tinyreactor {
+
 class InetAddress;
 
 class Socket {
@@ -24,4 +26,5 @@ class Socket {
   int socket_fd_;
 };
 
+}
 #endif //SRC_SOCKET_H_

@@ -9,6 +9,8 @@
 
 #include <string>
 
+namespace tinyreactor {
+
 class EventLoop;
 class InetAddress;
 class Connector;
@@ -25,4 +27,5 @@ class TcpClient {
   std::string name_;
 };
 
+}
 #endif //SINGLE_THREAD_REACTOR_SRC_TCPCLIENT_H_

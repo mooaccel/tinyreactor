@@ -1,16 +1,17 @@
 #ifndef SRC_EVENTLOOP_H
 #define SRC_EVENTLOOP_H
 
+#include <memory>
+#include <mutex>
+#include <thread>
+#include <vector>
+
 #include "channel.h"
 #include "epoll.h"  // class Epoll为啥不行?
 #include "util/time_stamp.h"
+#include "util/timer_queue.h"
 
-#include <vector>
-#include <memory>
-#include <thread>
-#include <mutex>
-
-class Channel;
+namespace tinyreactor {
 
 class EventLoop {
  public:
@@ -36,10 +37,12 @@ class EventLoop {
 
   bool isInLoopThread();
   std::thread::id getThreadIdBelongTo() { return threadIdBelongTo_; }
+  void assertInLoopThread();
 
  private:
   std::vector<Channel *> activeChannels_;
   std::unique_ptr<Epoll> poller_;  // std::unique 怎么命名好呢...
+  std::unique_ptr<TimerQueue> timerqueue_;
 
   std::thread::id threadIdBelongTo_;
   int wakeupFd_;
@@ -52,4 +55,5 @@ class EventLoop {
   // std::unique_ptr<TimerQueue> timerqueue_;
 };
 
+}
 #endif  // SRC_EVENTLOOP_H

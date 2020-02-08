@@ -7,6 +7,8 @@
 
 #include <functional>
 
+namespace tinyreactor {
+
 class EventLoop;
 
 // Channel 负责事件分发
@@ -77,4 +79,5 @@ class Channel {
   EventCallback writeCallback_;
 };
 
+}
 #endif  // SRC_CHANNEL_H_

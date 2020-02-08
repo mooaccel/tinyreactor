@@ -5,10 +5,12 @@
 #ifndef SRC_ACCEPTOR_H_
 #define SRC_ACCEPTOR_H_
 
+#include <functional>
+
 #include "channel.h"
 #include "socket.h"
 
-#include <functional>
+namespace tinyreactor {
 
 class EventLoop;
 class InetAddress;
@@ -37,4 +39,5 @@ class Acceptor {
   NewConnectionCallback newConnectionCallback_;
 };
 
+}
 #endif //SRC_ACCEPTOR_H_

@@ -4,20 +4,19 @@
 
 #include "tcp_connection.h"
 
-#include "channel.h"
-#include "socket.h"
-#include "channel.h"
-#include "socket_operations.h"
+#include <unistd.h>
 
+#include <cstring>
+#include <cassert>
 #include <functional>
 #include <iostream>
 #include <memory>
 
-#include <cstring>
-#include <cassert>
-#include <unistd.h>
+#include "channel.h"
+#include "socket.h"
+#include "socket_operations.h"
 
-using namespace monoreator;
+using namespace tinyreactor;
 
 TcpConnection::TcpConnection(EventLoop *loop,
                              std::string connname,

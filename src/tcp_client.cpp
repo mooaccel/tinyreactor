@@ -4,6 +4,8 @@
 
 #include "tcp_client.h"
 
+using namespace tinyreactor;
+
 TcpClient::TcpClient(EventLoop *loop, const InetAddress &serverAddr, const std::string &name) :
     loop_(loop),
     connector_(loop, serverAddr),

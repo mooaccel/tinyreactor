@@ -14,7 +14,7 @@
 #include <fcntl.h>
 #include <sys/uio.h>
 
-using namespace monoreator;
+using namespace tinyreator;
 
 int sockets::createSocket() {
     int socketfd = ::socket(AF_INET,

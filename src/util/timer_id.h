@@ -1,8 +1,8 @@
 //
 // Created by mojiajun on 2020/2/7.
 //
-#ifndef TINYREACTOR_SRC_UTIL_TIMERID_H_
-#define TINYREACTOR_SRC_UTIL_TIMERID_H_
+#ifndef TINYREACTOR_SRC_UTIL_TIMER_ID_H_
+#define TINYREACTOR_SRC_UTIL_TIMER_ID_H_
 
 #include "timer.h"
 
@@ -22,4 +22,4 @@ class TimerId {
 
 }
 
-#endif //TINYREACTOR_SRC_UTIL_TIMERID_H_
+#endif //TINYREACTOR_SRC_UTIL_TIMER_ID_H_

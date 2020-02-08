@@ -5,13 +5,15 @@
 #ifndef SRC_TCPSERVER_H_
 #define SRC_TCPSERVER_H_
 
-#include "callback.h"
-#include "acceptor.h"  // 定义std::unique<Acceptor> acceptor_;需要
-
 #include <functional>
 #include <map>
 #include <memory>
 #include <string>
+
+#include "callback.h"
+#include "acceptor.h"  // 定义std::unique<Acceptor> acceptor_;需要
+
+namespace tinyreactor {
 
 class EventLoop;
 class InetAddress;
@@ -48,4 +50,5 @@ class TcpServer {
   std::map<std::string, TcpConnectionPtr> connections_;
 };
 
+}
 #endif //SRC_TCPSERVER_H_

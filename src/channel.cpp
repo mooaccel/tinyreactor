@@ -2,10 +2,12 @@
 // Created by 莫佳骏 on 2019/9/9.
 //
 
+#include <sys/epoll.h>
+
 #include "channel.h"
 #include "event_loop.h"
 
-#include <sys/epoll.h>
+using namespace tinyreactor;
 
 const int Channel::kNoneEvent = 0;
 const int Channel::kReadEvent = EPOLLIN | EPOLLPRI;

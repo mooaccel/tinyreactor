@@ -4,9 +4,11 @@
 #ifndef SINGLE_THREAD_REACTOR_SRC_BUFFER_H_
 #define SINGLE_THREAD_REACTOR_SRC_BUFFER_H_
 
+#include <cassert>
 #include <string>
 #include <vector>
-#include <cassert>
+
+namespace tinyreactor {
 
 class Buffer {
  public:
@@ -111,4 +113,5 @@ class Buffer {
   size_t writerIndex_;
 };
 
+}
 #endif //SINGLE_THREAD_REACTOR_SRC_BUFFER_H_

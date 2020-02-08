@@ -10,7 +10,8 @@
 
 #include <functional>
 
-using namespace monoreator::sockets;
+using namespace tinyreactor;
+using namespace tinyreactor::sockets;
 
 Acceptor::Acceptor(EventLoop *loop, const InetAddress &listenAddr) :
     loop_(loop),

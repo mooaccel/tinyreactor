@@ -3,21 +3,22 @@
 //
 
 #include "inet_address.h"
+
+#include <cstring>
+#include <string>
+
 #include "socket_operations.h"
 
-#include <string>
-#include <cstring>
-
-using namespace monoreator;
+using namespace tinyreactor;
 
 InetAddress::InetAddress(std::string ip, uint16_t port) {
     ::memset(&addr_, 0, sizeof addr_);  // 可以不用吗?
-    monoreator::sockets::fromIpPort(ip.c_str(), port, &addr_);
+    sockets::fromIpPort(ip.c_str(), port, &addr_);
 }
 
 std::string InetAddress::toIpPort() const {
     char buf[64] = "";
-    monoreator::sockets::toIpPort(buf, sizeof buf, getSockAddr());
+    sockets::toIpPort(buf, sizeof buf, getSockAddr());
     return buf;
 }
 

@@ -1,13 +1,15 @@
 #include "epoll.h"
 
-#include "channel.h"
-
-#include <vector>
+#include <sys/epoll.h>
+#include <unistd.h>
 
 #include <cstdio>
 #include <cstring>
-#include <unistd.h>
-#include <sys/epoll.h>
+#include <vector>
+
+#include "channel.h"
+
+using namespace tinyreactor;
 
 Epoll::Epoll(EventLoop *ownerLoop) :
     ownerLoop_(ownerLoop),

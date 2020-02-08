@@ -3,8 +3,10 @@
 
 #include <vector>
 
-class Channel;
+namespace tinyreactor {
+
 class EventLoop;
+class Channel;
 struct epoll_event;
 
 class Epoll {
@@ -26,4 +28,5 @@ class Epoll {
   std::vector<struct epoll_event> events_;  // 类里面放vector扩容问题?
 };
 
+}
 #endif  // SRC_EPOLL_H

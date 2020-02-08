@@ -7,6 +7,8 @@
 
 #include "inet_address.h"
 
+namespace tinyreactor {
+
 class EventLoop;
 
 class Connector {
@@ -17,4 +19,5 @@ class Connector {
   InetAddress serverAddr_;  // 这种光有前向声明不行吧?
 };
 
+}
 #endif //SINGLE_THREAD_REACTOR_SRC_CONNECTOR_H_

@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <netinet/in.h>
 
-namespace monoreator {
+namespace tinyreactor {
 
 namespace sockets {
 
