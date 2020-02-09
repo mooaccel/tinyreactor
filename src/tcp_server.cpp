@@ -35,7 +35,7 @@ void TcpServer::newConnection(int connfd, const InetAddress &peerAddr) {
     snprintf(buf, sizeof(buf), "-%s#%d", listenIpPort_.c_str(), nextConnId_);
     ++nextConnId_;
     std::string connName = servername_ + buf;
-    InetAddress localAddr(monoreator::sockets::getLocalAddr(connfd));
+    InetAddress localAddr(tinyreactor::sockets::getLocalAddr(connfd));
     TcpConnectionPtr conn(std::make_shared<TcpConnection>(loop_,  // 先暂时让它在IO Loop线程
                                                           connName,
                                                           connfd,

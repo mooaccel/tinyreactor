@@ -1,13 +1,14 @@
 #ifndef SRC_EPOLL_H
 #define SRC_EPOLL_H
 
+#include <sys/epoll.h>
+
 #include <vector>
 
 namespace tinyreactor {
 
 class EventLoop;
 class Channel;
-struct epoll_event;
 
 class Epoll {
  public:

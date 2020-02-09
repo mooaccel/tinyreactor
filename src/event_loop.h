@@ -10,12 +10,14 @@
 #include "epoll.h"  // class Epoll为啥不行?
 #include "util/time_stamp.h"
 #include "util/timer_queue.h"
+#include "util/timer_id.h"
 
 namespace tinyreactor {
 
 class EventLoop {
  public:
   using Functor = std::function<void()>;
+
   EventLoop();
   ~EventLoop() = default;
 
@@ -26,9 +28,12 @@ class EventLoop {
   void updateChannel(Channel *channel);
   void removeChannel(Channel *channel);
 
-  void runAt();
-  void runAfter();
-  void runEvery();
+  /// @expiration_timepoint 到期的时间点
+  /// @timercb 到达指定时间点后回调这个函数
+  TimerId runAt(Timestamp expiration_timepoint, TimerCallback timercb);
+  /// @delay 从调用runAfterNow时间点向后加delay即为runAt版本的expiration_timepoint
+  TimerId runAfterNow(double delay, TimerCallback timercb);
+  TimerId runEvery();
   void cancelTimer();
 
   void runInLoop(Functor functor);

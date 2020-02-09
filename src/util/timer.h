@@ -14,15 +14,19 @@ class Timer {
   Timer(const Timer &) = delete;
   Timer &operator=(const Timer &) = delete;
 
-  Timer(TimerCallback cb, Timestamp when, double interval)
+  Timer(TimerCallback cb, Timestamp expiration_timepoint, double interval)
       : callback_(cb),
-        expiration_(when),
+        expiration_(expiration_timepoint),
         interval_(interval),
         repeat_(interval > 0.0) {
   }
 
   void timer_cb() {
       callback_();
+  }
+
+  Timestamp expiration() {
+      return expiration_;
   }
 
  private:

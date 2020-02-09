@@ -1,5 +1,6 @@
 #include "epoll.h"
 
+#include <sys/time.h>
 #include <sys/epoll.h>
 #include <unistd.h>
 
@@ -23,7 +24,7 @@ Epoll::~Epoll() {
     ::close(epfd_);
 }
 
-int Epoll::poll(struct timeval *tvp, std::vector<Channel*> &activeChannels) {
+int Epoll::poll(struct timeval *tvp, std::vector<Channel *> &activeChannels) {
     int retval, numevents = 0;
     retval = ::epoll_wait(epfd_,
                           &*events_.begin(),
@@ -57,8 +58,7 @@ void Epoll::updateChannelInEpoll(Channel *channel) {
 
 void Epoll::removeChannelInEpoll(Channel *channel) {
     int fd = channel->fd();
-    if (::epoll_ctl(epfd_, EPOLL_CTL_DEL, fd, nullptr) == -1)
-    {
+    if (::epoll_ctl(epfd_, EPOLL_CTL_DEL, fd, nullptr) == -1) {
         std::fprintf(stderr, "epoll_ctl occur error in Epoll::updateChannelInEpoll()\n ");
         // 应该终止吧?
     }

@@ -14,7 +14,7 @@
 #include <fcntl.h>
 #include <sys/uio.h>
 
-using namespace tinyreator;
+using namespace tinyreactor;
 
 int sockets::createSocket() {
     int socketfd = ::socket(AF_INET,
@@ -61,7 +61,7 @@ struct sockaddr_in sockets::getLocalAddr(int sockfd) {
     struct sockaddr_in localaddr;
     ::memset(&localaddr, 0, sizeof localaddr);
     socklen_t addrlen = static_cast<socklen_t>(sizeof localaddr);
-    if (::getsockname(sockfd, monoreator::sockets::sockaddr_cast(&localaddr), &addrlen) < 0) {
+    if (::getsockname(sockfd, tinyreactor::sockets::sockaddr_cast(&localaddr), &addrlen) < 0) {
         std::cout << "sockets::getLocalAddr error" << '\n';
     }
     return localaddr;
@@ -70,7 +70,7 @@ struct sockaddr_in sockets::getLocalAddr(int sockfd) {
 void sockets::toIp(char *buf, size_t size,
                    const struct sockaddr *addr) {
     if (addr->sa_family == AF_INET) {
-        const struct sockaddr_in *addr4 = monoreator::sockets::sockaddr_in_cast(addr);
+        const struct sockaddr_in *addr4 = tinyreactor::sockets::sockaddr_in_cast(addr);
         ::inet_ntop(AF_INET, &addr4->sin_addr, buf, static_cast<socklen_t>(size));
     } else {
         fprintf(stderr, "toIp error\n");
@@ -79,9 +79,9 @@ void sockets::toIp(char *buf, size_t size,
 
 void sockets::toIpPort(char *buf, size_t size,
                        const struct sockaddr *addr) {
-    monoreator::sockets::toIp(buf, size, addr);
+    tinyreactor::sockets::toIp(buf, size, addr);
     size_t end = ::strlen(buf);
-    const struct sockaddr_in *addr4 = monoreator::sockets::sockaddr_in_cast(addr);
+    const struct sockaddr_in *addr4 = tinyreactor::sockets::sockaddr_in_cast(addr);
     uint16_t port = ntohs(addr4->sin_port);
     snprintf(buf + end, size - end, ":%u", port);
 }

@@ -16,15 +16,30 @@ class Timestamp {
   ~Timestamp() = default;
 
   std::string toString() const;
+  int64_t microSecondsSinceEpoch() const {
+      return microSecondsSinceEpoch_;
+  }
 
+  /// 返回调用now()时的Timestamp
   static Timestamp now();
+
+  /// 从timestamp开始加delay_seconds
+  static Timestamp addTime(Timestamp timestamp, double delay_seconds);
 
   static const int kMicroSecondsPerSecond = 1000 * 1000;
 
  private:
   /// s * 10^6 + us
-  int64_t microSecondSinceEpoch_;
+  int64_t microSecondsSinceEpoch_;
 };
+
+inline bool operator<(Timestamp lhs, Timestamp rhs) {
+    return lhs.microSecondsSinceEpoch() < rhs.microSecondsSinceEpoch();
+}
+
+inline bool operator==(Timestamp lhs, Timestamp rhs) {
+    return lhs.microSecondsSinceEpoch() == rhs.microSecondsSinceEpoch();
+}
 
 }
 

@@ -9,9 +9,7 @@
 #include <sys/timerfd.h>
 #include <cstring>
 
-void print(const char *msg) {
-    printf("msg %s %s\n", tinyreactor::Timestamp::now().toString().c_str(), msg);
-}
+using namespace tinyreactor;
 
 void timeout() {
     printf("Timeout!\n");
@@ -19,11 +17,6 @@ void timeout() {
 
 int main() {
     EventLoop loop;
-
-    //loop.runAfter(1, std::bind(print, "once1"));
-    //loop.runAfter(1.7, std::bind(print, "once1.7"));
-    //loop.runAfter(2.5, std::bind(print, "once2.5"));
-    //loop.runEvery(2, std::bind(print, "every2"));
 
     // 这几个flag
     int timerfd = ::timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);

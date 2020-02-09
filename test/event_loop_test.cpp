@@ -6,6 +6,8 @@
 #include <iostream>
 #include <thread>
 
+using namespace tinyreactor;
+
 void _other_thread_test(EventLoop *loop) {
     std::cout << " sub thread " << loop->isInLoopThread() << '\n';
 }
