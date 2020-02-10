@@ -6,6 +6,7 @@
 #include <sys/timerfd.h>
 #include <unistd.h>
 
+#include <cassert>
 #include <cstring>  // memset
 #include <functional>
 #include <memory>
@@ -46,6 +47,17 @@ struct timespec howMuchTimeFromNow(Timestamp expiration) {
     ts.tv_nsec = static_cast<long>(
         (microseconds % Timestamp::kMicroSecondsPerSecond) * 1000);
     return ts;
+}
+
+void readTimerfd(int timerfd) {
+    uint64_t nums;
+    ssize_t n = ::read(timerfd, &nums, sizeof nums);
+    LOG(INFO) << "readTimerfd number of expiration occur "
+              << nums
+              << " times";
+    if (n != sizeof nums) {
+        LOG(FATAL) << "readTimerfd read " << n << " bytes instead of 8";
+    }
 }
 
 /// 设置Timerfd的超时时间, Timer假设是周期性触发的, 也被设置为多个单次触发
@@ -124,7 +136,47 @@ bool TimerQueue::insertQueue(Timer *timer) {
     return isInQueueFront;
 }
 
-void TimerQueue::handleRead() {
-    LOG(INFO) << "test TimerQueue::handleRead()";
+/// 截止now_timepoint, 把超时的Timer*取出来
+std::vector<Timer *> TimerQueue::getExpiredTimer(Timestamp now_timepoint) {
+    std::vector<Timer *> expired_timers;
+    // expired_timers里面的元素都 < now_timepoint
+    auto end = timers_.lower_bound(now_timepoint);
+    // 如果now_timepoint == end->first呢
+    assert(end == timers_.end() || now_timepoint < end->first);
+
+    for (auto it = timers_.begin(); it != end; ++it) {
+        for (auto it_vec = it->second.begin(); it_vec != it->second.end(); ++it_vec) {
+            expired_timers.push_back(*it_vec);
+        }
+    }
+    timers_.erase(timers_.begin(), end);
+    return expired_timers;
 }
 
+void TimerQueue::handleRead() {
+    loop_->assertInLoopThread();
+    impl::readTimerfd(timerfd_);
+    Timestamp now_timepoint = Timestamp::now();
+    std::vector<Timer *> expired_timers = getExpiredTimer(now_timepoint);
+
+    for (auto &item : expired_timers) {
+        item->timer_cb();
+    }
+
+    resetTimerQueueAndTimerfd(expired_timers, now_timepoint);
+}
+
+/// reset什么? 命名得改
+void TimerQueue::resetTimerQueueAndTimerfd(std::vector<Timer *> &expired_timers, Timestamp now_timepoint) {
+    Timestamp nextExpired;
+
+    // 相等的情况怎么办?
+    // repeat的timer还没有考虑进来
+
+    if (!timers_.empty()) {
+        nextExpired = timers_.begin()->first;
+    }
+    if (nextExpired.valid()) {
+        impl::setTimerfdExpiration(timerfd_, nextExpired);
+    }
+}

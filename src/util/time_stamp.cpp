@@ -9,7 +9,8 @@
 
 using namespace tinyreactor;
 
-Timestamp::Timestamp() {}
+Timestamp::Timestamp() :
+    microSecondsSinceEpoch_(0) {}
 
 Timestamp::Timestamp(int64_t microSecondSinceEpoch) :
     microSecondsSinceEpoch_(microSecondSinceEpoch) {}

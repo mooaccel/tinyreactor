@@ -45,6 +45,7 @@ int Epoll::poll(struct timeval *tvp, std::vector<Channel *> &activeChannels) {
 void Epoll::updateChannelInEpoll(Channel *channel) {
     struct epoll_event event;
     std::memset(&event, 0, sizeof event);
+    // 可以部分事件ET, 部分事件LT吗?
     event.events = channel->events() | EPOLLET;
     event.data.ptr = channel;
     int fd = channel->fd();

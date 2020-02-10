@@ -35,6 +35,8 @@ class TimerQueue {
 
  private:
   void handleRead();
+  std::vector<Timer*> getExpiredTimer(Timestamp now_timepoint);
+  void resetTimerQueueAndTimerfd(std::vector<Timer*> &expired_timers, Timestamp now_timepoint);
 
   void addTimerInLoop(Timer *timer);
   bool insertQueue(Timer *timer);

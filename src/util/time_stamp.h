@@ -20,6 +20,10 @@ class Timestamp {
       return microSecondsSinceEpoch_;
   }
 
+  bool valid() const {
+      return microSecondsSinceEpoch_ > 0;
+  }
+
   /// 返回调用now()时的Timestamp
   static Timestamp now();
 
