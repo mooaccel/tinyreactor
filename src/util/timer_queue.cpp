@@ -40,6 +40,7 @@ struct timespec howMuchTimeFromNow(Timestamp expiration) {
     if (microseconds < 100) {  // ?
         microseconds = 100;
     }
+    LOG(INFO) << "howMuchTimeFromNow(Timestamp expiration) is" << microseconds << '\n';
     // 再转换成timespec结构体
     struct timespec ts;
     ts.tv_sec = static_cast<time_t>(
@@ -64,8 +65,12 @@ void readTimerfd(int timerfd) {
 /// @timerfd 被设置的timerfd
 /// @expiration 超时时间点
 void setTimerfdExpiration(int timerfd, Timestamp expiration) {
+    LOG(INFO) << "setTimerfdExpiration "
+              << "Timestamp is(microSecondsSinceEpoch) (us) "
+              << expiration.microSecondsSinceEpoch() << '\n';
     struct itimerspec new_value;
     std::memset(&new_value, 0, sizeof new_value);
+    // 相对时间
     new_value.it_value = howMuchTimeFromNow(expiration);
     // By default, the initial expiration time specified in new_value is
     // interpreted relative to the current time on the timer's clock at the
@@ -97,9 +102,15 @@ TimerQueue::TimerQueue(EventLoop *loop) :
 TimerQueue::~TimerQueue() {
     // 关闭Channel..
     timerfdChannel_->disableAll();
+    // 从loop中移除对这个Channel的关注, 最后影响epoll
     timerfdChannel_->remove();
     ::close(timerfd_);
-}
+    for (auto it = timers_.begin(); it != timers_.end(); ++it) {
+        for (auto &item : it->second) {
+            delete item;
+        }
+    }
+}  // 执行完函数体之后, 销毁成员
 
 TimerId TimerQueue::addTimer(TimerCallback timercb,
                              Timestamp expiration_timepoint,
@@ -121,7 +132,7 @@ void TimerQueue::addTimerInLoop(Timer *timer) {
 }
 
 void TimerQueue::cancelTimer(TimerId timerid) {
-
+    // TODO
 }
 
 bool TimerQueue::insertQueue(Timer *timer) {
@@ -140,9 +151,10 @@ bool TimerQueue::insertQueue(Timer *timer) {
 std::vector<Timer *> TimerQueue::getExpiredTimer(Timestamp now_timepoint) {
     std::vector<Timer *> expired_timers;
     // expired_timers里面的元素都 < now_timepoint
+    // *end >= now_timepoint
     auto end = timers_.lower_bound(now_timepoint);
     // 如果now_timepoint == end->first呢
-    assert(end == timers_.end() || now_timepoint < end->first);
+    assert(end == timers_.end() || now_timepoint <= end->first);
 
     for (auto it = timers_.begin(); it != end; ++it) {
         for (auto it_vec = it->second.begin(); it_vec != it->second.end(); ++it_vec) {
@@ -156,6 +168,8 @@ std::vector<Timer *> TimerQueue::getExpiredTimer(Timestamp now_timepoint) {
 void TimerQueue::handleRead() {
     loop_->assertInLoopThread();
     impl::readTimerfd(timerfd_);
+    // 得到这个时间点(超时之后然后回调到hanleRead之后的)的时间戳
+    // 如果是repeat的, 还要用这个now_timepoint + interval计算出下一次该Timer的expiration
     Timestamp now_timepoint = Timestamp::now();
     std::vector<Timer *> expired_timers = getExpiredTimer(now_timepoint);
 
@@ -170,6 +184,19 @@ void TimerQueue::handleRead() {
 void TimerQueue::resetTimerQueueAndTimerfd(std::vector<Timer *> &expired_timers, Timestamp now_timepoint) {
     Timestamp nextExpired;
 
+    for (auto it = expired_timers.begin(); it != expired_timers.end(); ++it) {
+        // 如果Timer需要重复设置
+        Timer *timer = *it;
+        if (timer->repeat()) {
+            timer->restartTimer(now_timepoint);
+            // 这里返回true也不用管了. 因为后面!timer.empty()之后反正会取第一个Timer出来
+            // 这里的逻辑也感觉不太好...
+            insertQueue(timer);
+        } else {
+            // 这种方式不好
+            delete timer;
+        }
+    }
     // 相等的情况怎么办?
     // repeat的timer还没有考虑进来
 

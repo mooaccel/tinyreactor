@@ -33,7 +33,7 @@ class EventLoop {
   TimerId runAt(Timestamp expiration_timepoint, TimerCallback timercb);
   /// @delay 从调用runAfterNow时间点向后加delay即为runAt版本的expiration_timepoint
   TimerId runAfterNow(double delay, TimerCallback timercb);
-  TimerId runEvery();
+  TimerId runEvery(double interval, TimerCallback timercb);
   void cancelTimer();
 
   void runInLoop(Functor functor);

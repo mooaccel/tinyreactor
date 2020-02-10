@@ -47,8 +47,10 @@ TimerId EventLoop::runAfterNow(double delay, TimerCallback timercb) {
     return timerqueue_->addTimer(std::move(timercb), expiration_timepoint, 0.0);
 }
 
-TimerId EventLoop::runEvery() {
-    // TODO
+TimerId EventLoop::runEvery(double interval, TimerCallback timercb) {
+    Timestamp expiration_timepoint = Timestamp::addTime(Timestamp::now(), interval);
+    // 第一次Timer超时是在expiration_timepoint, 然后每隔interval秒超时一次
+    return timerqueue_->addTimer(std::move(timercb), expiration_timepoint, interval);
 }
 
 void EventLoop::cancelTimer() {

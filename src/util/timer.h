@@ -21,6 +21,10 @@ class Timer {
         repeat_(interval > 0.0) {
   }
 
+  bool repeat() const {
+      return repeat_;
+  }
+
   void timer_cb() {
       callback_();
   }
@@ -28,6 +32,8 @@ class Timer {
   Timestamp expiration() {
       return expiration_;
   }
+
+  void restartTimer(Timestamp now);
 
  private:
   const TimerCallback callback_;

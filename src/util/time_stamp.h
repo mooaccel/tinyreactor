@@ -27,6 +27,8 @@ class Timestamp {
   /// 返回调用now()时的Timestamp
   static Timestamp now();
 
+  static Timestamp invalid();
+
   /// 从timestamp开始加delay_seconds
   static Timestamp addTime(Timestamp timestamp, double delay_seconds);
 
@@ -39,6 +41,10 @@ class Timestamp {
 
 inline bool operator<(Timestamp lhs, Timestamp rhs) {
     return lhs.microSecondsSinceEpoch() < rhs.microSecondsSinceEpoch();
+}
+
+inline bool operator<=(Timestamp lhs, Timestamp rhs) {
+    return lhs.microSecondsSinceEpoch() <= rhs.microSecondsSinceEpoch();
 }
 
 inline bool operator==(Timestamp lhs, Timestamp rhs) {
