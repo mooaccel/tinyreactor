@@ -16,13 +16,13 @@
 using std::placeholders::_1;
 using std::placeholders::_2;
 
-class EchoServer
-{
+using namespace tinyreactor;
+
+class EchoServer {
  public:
-  EchoServer(EventLoop* loop, const InetAddress& listenAddr)
+  EchoServer(EventLoop *loop, const InetAddress &listenAddr)
       : loop_(loop),
-        server_(loop, listenAddr, "EchoServer")
-  {
+        server_(loop, listenAddr, "EchoServer") {
       server_.setConnectionCallback(
           std::bind(&EchoServer::onConnection, this, _1));
       server_.setMessageCallback(
@@ -30,15 +30,14 @@ class EchoServer
   }
   ~EchoServer() = default;
 
-  void startListen()
-  {
+  void startListen() {
       server_.startListen();
   }
   // void stop();
 
  private:
-  void onConnection(const TcpConnectionPtr& conn)
-  {
+  // 建立连接之后的回调函数, conn是std::shared_ptr<TcpConnection>的引用
+  void onConnection(const TcpConnectionPtr &conn) {
       //std::cout << conn->peerAddress().toIpPort() << " -> "
       //          << conn->localAddress().toIpPort() << " is "
       //          << (conn->connected() ? "UP" : "DOWN");
@@ -47,8 +46,8 @@ class EchoServer
       conn->send("hello from server\n");
   }
 
-  void onMessage(const TcpConnectionPtr& conn, Buffer* buf)
-  {
+  // 怎么确保回调收上来的是完整的数据报文?
+  void onMessage(const TcpConnectionPtr &conn, Buffer *buf) {
       std::string msg(buf->retrieveAllAsString());
       std::cout << msg << '\n';
       std::cout << conn->conname() << " recv " << msg.size() << " bytes" << '\n';
@@ -64,12 +63,11 @@ class EchoServer
       conn->send(msg);
   }
 
-  EventLoop* loop_;
+  EventLoop *loop_;
   TcpServer server_;
 };
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char *argv[]) {
     std::cout << "sizeof TcpConnection = " << sizeof(TcpConnection);
     EventLoop loop;
     InetAddress listenAddr("127.0.0.1", 9877);

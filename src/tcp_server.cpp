@@ -25,9 +25,12 @@ TcpServer::TcpServer(EventLoop *loop, const InetAddress &listenAddr, std::string
     servername_(servername),
     nextConnId_(1),
     acceptor_(std::make_unique<Acceptor>(loop, listenAddr)) {
+    // 给Acceptor的readable设置回调函数
     acceptor_->setNewConnectionCallback(std::bind(&TcpServer::newConnection, this, _1, _2));  // ?为什么要加上&
 }
 
+/// @connfd Acceptor accpet()之后返回的连接套接字
+/// @peerAddr 客户端的地址
 void TcpServer::newConnection(int connfd, const InetAddress &peerAddr) {
     std::cout << "TcpServer::newConnection [" << servername_
               << "] from " << peerAddr.toIpPort();
@@ -42,6 +45,7 @@ void TcpServer::newConnection(int connfd, const InetAddress &peerAddr) {
                                                           localAddr,
                                                           peerAddr));
     connections_[connName] = conn;
+    // 把TcpServer里面存的cb传给TcpConnection
     conn->setConnectionCallback(connectionCallback_);
     conn->setMessageCallback(messageCallback_);
     conn->connectEstablished();

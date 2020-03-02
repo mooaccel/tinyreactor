@@ -42,12 +42,15 @@ TcpConnection::TcpConnection(EventLoop *loop,
 }
 
 void TcpConnection::connectEstablished() {
+    // 这一行为什么不放在构造函数里?
     channel_->enableReading();
     connectionCallback_(shared_from_this()); // 建立完连接后,记录下连接的信息后,可以返回了,然后一层一层返回到epoll_wait()
+    // 这个std::shared_ptr<TcpConnection>在这里结束它的生命期? TODO打个断点看看
 }
 
 void TcpConnection::handleRead() {  // connfd可读
     int savedErrno = 0;
+    // 网络库这边(TcpConnection)给把数据收到Buffer
     ssize_t n = inputBuffer_.readFd(channel_->fd(), &savedErrno);
     if (n > 0) {
         messageCallback_(shared_from_this(), &inputBuffer_);
