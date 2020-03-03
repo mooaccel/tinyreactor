@@ -1,6 +1,7 @@
 #include "event_loop.h"
 
 #include <unistd.h>
+#include <sys/eventfd.h>
 
 #include <cstdio>
 #include <iostream>
@@ -13,10 +14,25 @@
 
 using namespace tinyreactor;
 
+int createEventfd() {
+    int evtfd = ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
+    if (evtfd < 0) {
+        std::cerr << "Failed in eventfd";
+        std::terminate();
+    }
+    return evtfd;
+}
+
 EventLoop::EventLoop() :
     poller_(std::make_unique<Epoll>(this)),
     timerqueue_(std::make_unique<TimerQueue>(this)),
-    threadIdBelongTo_(std::this_thread::get_id()) {
+    threadIdBelongTo_(std::this_thread::get_id()),
+    wakeupFd_(createEventfd()),
+    wakeupChannel_(new Channel(this, wakeupFd_)) {
+    wakeupChannel_->setReadCallback(
+        std::bind(&EventLoop::handleRead, this));
+    // we are always reading the wakeupfd
+    wakeupChannel_->enableReading();
 }
 
 void EventLoop::loop() {
@@ -27,6 +43,7 @@ void EventLoop::loop() {
         for (auto curChannel : activeChannels_) {
             curChannel->handleEvent();
         }
+        doPendingFunctors();
     }
 }
 
@@ -94,4 +111,23 @@ void EventLoop::wakeupLoopThread() {
 
 bool EventLoop::isInLoopThread() {
     return threadIdBelongTo_ == std::this_thread::get_id();
+}
+
+void EventLoop::handleRead() {
+    uint64_t one = 1;
+    ssize_t n = ::read(wakeupFd_, &one, sizeof one);
+    if (n != sizeof one) {
+        std::cerr << "被wakeupfd唤醒之后, EventLoop::handleRead() reads " << n << " bytes instead of 8";
+    }
+}
+
+void EventLoop::doPendingFunctors() {
+    std::vector<Functor> functors;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        functors.swap(pendingFunctors_);
+    }
+    for (const Functor &functor : functors) {
+        functor();
+    }
 }

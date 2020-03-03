@@ -3,6 +3,7 @@ project(tinyreactor_lib)
 set(TINYREACTOR_LIB_SRCS
         channel.cpp
         event_loop.cpp
+        eventloop_thread.cpp
         epoll.cpp
         acceptor.cpp
         socket.cpp
