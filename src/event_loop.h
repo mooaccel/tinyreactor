@@ -49,11 +49,11 @@ class EventLoop {
   void handleRead();
   void doPendingFunctors();
 
+  std::thread::id threadIdBelongTo_;
   std::vector<Channel *> activeChannels_;
   std::unique_ptr<Epoll> poller_;  // std::unique 怎么命名好呢...
   std::unique_ptr<TimerQueue> timerqueue_;
 
-  std::thread::id threadIdBelongTo_;
   int wakeupFd_;
   std::unique_ptr<Channel> wakeupChannel_;
 

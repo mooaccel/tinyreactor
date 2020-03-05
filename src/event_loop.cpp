@@ -26,15 +26,17 @@ int createEventfd() {
 }
 
 EventLoop::EventLoop() :
+    threadIdBelongTo_(std::this_thread::get_id()),
     poller_(std::make_unique<Epoll>(this)),
     timerqueue_(std::make_unique<TimerQueue>(this)),
-    threadIdBelongTo_(std::this_thread::get_id()),
     wakeupFd_(createEventfd()),
     wakeupChannel_(new Channel(this, wakeupFd_)) {
+
     wakeupChannel_->setReadCallback(
         std::bind(&EventLoop::handleRead, this));
     // we are always reading the wakeupfd
     wakeupChannel_->enableReading();
+    LOG(INFO) << "EventLoop threadIdBelongTo_ is " << std::this_thread::get_id();
 }
 
 void EventLoop::loop() {
@@ -100,7 +102,10 @@ void EventLoop::queueInLoop(Functor functor) {
 void EventLoop::assertInLoopThread() {
     // 如果不在LoopThread中,那么停止这个线程
     if (!isInLoopThread()) {
-        std::terminate();
+        // 终止
+        LOG(FATAL) << "EventLoop this pointer = " << this
+                   << " was created in threadId_ = " << threadIdBelongTo_
+                   << " current thread id = " << std::this_thread::get_id();
     }
 }
 

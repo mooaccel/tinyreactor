@@ -63,12 +63,12 @@ void Epoll::poll(struct timeval *tvp, std::vector<Channel *> &activeChannels) {
 }
 
 void Epoll::updateChannelInEpoll(Channel *channel) {
-    //ownerLoop_->assertInLoopThread();
+    ownerLoop_->assertInLoopThread();
     // 如果channel里面没有关注的事件
-    //if (channel->isNoneEvent()) {
-    //    removeChannelInEpoll(channel);
-    //    return;
-    //}
+    if (channel->isNoneEvent()) {
+        removeChannelInEpoll(channel);
+        return;
+    }
     LOG(INFO) << "Epoll::updateChannelInEpoll EventLoop " << ownerLoop_
               << " fd = " << channel->fd()
               << " events = " << channel->events();
@@ -101,7 +101,7 @@ void Epoll::updateChannelInEpoll(Channel *channel) {
 
 /// 在epfd_里面移除channel对应的fd
 void Epoll::removeChannelInEpoll(Channel *channel) {
-    //ownerLoop_->assertInLoopThread();
+    ownerLoop_->assertInLoopThread();
     int fd_associate_channel = channel->fd();
     // 如果没找到fd_associate_channel对应的channel, 那么就不需要删除
     if (channels_.find(fd_associate_channel) == channels_.end()) {
