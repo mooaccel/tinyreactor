@@ -4,15 +4,16 @@
 
 #include "tcp_server.h"
 
-#include "acceptor.h"
-#include "inet_address.h"
-#include "socket_operations.h"
-#include "tcp_connection.h"
-
 #include <iostream>
 #include <memory>
 #include <string>
 #include <functional>
+
+#include "acceptor.h"
+#include "event_loop.h"
+#include "inet_address.h"
+#include "socket_operations.h"
+#include "tcp_connection.h"
 
 using std::placeholders::_1;
 using std::placeholders::_2;
@@ -32,6 +33,9 @@ TcpServer::TcpServer(EventLoop *loop, const InetAddress &listenAddr, std::string
 /// @connfd Acceptor accpet()之后返回的连接套接字
 /// @peerAddr 客户端的地址
 void TcpServer::newConnection(int connfd, const InetAddress &peerAddr) {
+    // 确保在监听fd所在的loop中执行TcpServer::newConnection()
+    loop_->assertInLoopThread();
+    // FIXME: 用glog? 要确保线程安全
     std::cout << "TcpServer::newConnection [" << servername_
               << "] from " << peerAddr.toIpPort();
     char buf[64];
@@ -39,7 +43,9 @@ void TcpServer::newConnection(int connfd, const InetAddress &peerAddr) {
     ++nextConnId_;
     std::string connName = servername_ + buf;
     InetAddress localAddr(tinyreactor::sockets::getLocalAddr(connfd));
-    TcpConnectionPtr conn(std::make_shared<TcpConnection>(loop_,  // 先暂时让它在IO Loop线程
+    // 先暂时让conn的read和write发生在IO Loop线程
+    EventLoop *ioLoop = loop_;
+    TcpConnectionPtr conn(std::make_shared<TcpConnection>(ioLoop,
                                                           connName,
                                                           connfd,
                                                           localAddr,
@@ -48,5 +54,7 @@ void TcpServer::newConnection(int connfd, const InetAddress &peerAddr) {
     // 把TcpServer里面存的cb传给TcpConnection
     conn->setConnectionCallback(connectionCallback_);
     conn->setMessageCallback(messageCallback_);
-    conn->connectEstablished();
+    // TcpConnection::connectEstablished需要TcpConnection示例的指针
+    // 这里传入conn, 其能转成raw pointer
+    ioLoop->runInLoop(std::bind(&TcpConnection::connectEstablished, conn));
 }

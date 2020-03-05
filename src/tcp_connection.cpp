@@ -13,6 +13,7 @@
 #include <memory>
 
 #include "channel.h"
+#include "event_loop.h"
 #include "socket.h"
 #include "socket_operations.h"
 
@@ -23,7 +24,7 @@ TcpConnection::TcpConnection(EventLoop *loop,
                              int connfd,
                              const InetAddress &localAddr,
                              const InetAddress &peerAddr) :
-    loop_(loop),
+    ioloop_(loop),
     connname_(connname),
     socket_(std::make_unique<Socket>(connfd)),  // Socket's destructor will close connfd
     channel_(std::make_unique<Channel>(loop, connfd)),
@@ -50,8 +51,9 @@ void TcpConnection::connectEstablished() {
 
 void TcpConnection::handleRead() {  // connfd可读
     int savedErrno = 0;
-    // 网络库这边(TcpConnection)给把数据收到Buffer
+    // 网络库这边(TcpConnection)给把数据从内核缓冲区收到Buffer里面
     ssize_t n = inputBuffer_.readFd(channel_->fd(), &savedErrno);
+    // 一次没读完怎么办?
     if (n > 0) {
         messageCallback_(shared_from_this(), &inputBuffer_);
     } else if (n == 0) {
@@ -63,7 +65,10 @@ void TcpConnection::handleRead() {  // connfd可读
     }
 }
 
+/// Reactor发现这个connfd可读的时候调用handleWrite()
 void TcpConnection::handleWrite() {  // connfd可写
+    // 确保handleWrite是在io线程执行的
+    ioloop_->assertInLoopThread();
     if (channel_->isMonitoringWritable()) {
         ssize_t n = sockets::write(channel_->fd(),
                                    outputBuffer_.peek(),
@@ -82,6 +87,7 @@ void TcpConnection::handleWrite() {  // connfd可写
     }
 }
 
+/// 先尝试直接写, 写不完就先放在outputBuffer_里面, 然后设置channel->enableWriting()
 void TcpConnection::send(const void *data, size_t len) {
     ssize_t nwrote = 0;
     size_t remaining = len;

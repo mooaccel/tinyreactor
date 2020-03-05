@@ -42,7 +42,7 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
   void setMessageCallback(const MessageCallback &cb) { messageCallback_ = cb; }
 
  private:
-  EventLoop *loop_;
+  EventLoop *ioloop_;
   const std::string connname_;
   std::unique_ptr<Socket> socket_;  // Wrapper of connfd
   std::unique_ptr<Channel> channel_;  // Channel corresponding to connfd

@@ -38,6 +38,7 @@ class TcpServer {
   }
 
  private:
+  /// Acceptor所在的eventloop
   EventLoop *loop_;
   const std::string listenIpPort_;
   const std::string servername_;
@@ -47,6 +48,7 @@ class TcpServer {
   ConnectionCallback connectionCallback_;
   MessageCallback messageCallback_;
 
+  /// TcpServer里需要保存从连接名字到TcpConnection的映射
   std::map<std::string, TcpConnectionPtr> connections_;
 };
 
