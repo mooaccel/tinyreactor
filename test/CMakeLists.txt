@@ -39,6 +39,7 @@ set(TIMER_TEST_SOURCE_FILES timer_test.cpp)
 set(EVENTLOOP_TEST_SOURCE_FILES event_loop_test.cpp)
 set(TIMER_QUEUE_TEST_SOURCE_FILES timer_queue_test.cpp)
 set(EVENTLOOP_TEST_FILES eventloop_thread_test.cpp)
+set(CHANNEL_TEST_FILES channel_constant_val_test.cpp)
 
 #add_executable(channel_test Channel_test.cpp)
 #target_link_libraries(channel_test single_thread_reactor)
@@ -49,6 +50,7 @@ set(TEST_SRC_LINK
         ${GLOG_LIB}
         ${GTEST_LIB})
 
+add_executable(channel_constant_val_test ${CHANNEL_TEST_FILES})
 add_executable(echoServer_test echo_server_test.cpp)
 add_executable(time_stamp_test ${TIMESTAMP_TEST_SOURCE_FILES})
 add_executable(timer_test ${TIMER_TEST_SOURCE_FILES})
@@ -56,6 +58,7 @@ add_executable(event_loop_test ${EVENTLOOP_TEST_SOURCE_FILES})
 add_executable(timer_queue_test ${TIMER_QUEUE_TEST_SOURCE_FILES})
 add_executable(eventloop_thread_test ${EVENTLOOP_TEST_FILES})
 
+target_link_libraries(channel_constant_val_test ${TEST_SRC_LINK})
 target_link_libraries(echoServer_test ${TEST_SRC_LINK})
 target_link_libraries(time_stamp_test ${TEST_SRC_LINK})
 target_link_libraries(timer_test ${TEST_SRC_LINK})

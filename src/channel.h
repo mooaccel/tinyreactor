@@ -17,7 +17,7 @@ class Channel {
  public:
   using EventCallback = std::function<void()>;
 
-  Channel(EventLoop *loop, int fd) : loopOwner_(loop), fd_(fd) {}
+  Channel(EventLoop *loop, int fd);
   ~Channel() = default;
 
   Channel(const Channel &) = delete;
@@ -60,19 +60,25 @@ class Channel {
   bool isWriting() const { return events_ & kWriteEvent; }
   bool isReading() const { return events_ & kReadEvent; }
 
+  bool isNoneEvent() const;
+
   void setReadCallback(EventCallback cb) { readCallback_ = std::move(cb); }
   void setWriteCallback(EventCallback cb) { writeCallback_ = std::move(cb); }
 
- private:
   static const int kNoneEvent;
   static const int kReadEvent;
   static const int kWriteEvent;
+ private:
 
   void update();
 
-  EventLoop *loopOwner_;
+  // 这个Channel属于哪个loop
+  EventLoop *ownerLoop_;
+
   int fd_;
+  // channel感兴趣的事件集合
   int events_;
+  // 用于epoll_wait()返回后填充, r代表return
   int revents_;
 
   EventCallback readCallback_;

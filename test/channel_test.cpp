@@ -1,7 +1,3 @@
-#include "src/epoll.h"
-#include "src/channel.h"
-#include "src/event_loop.h"
-
 #include <functional>
 //#include <map>
 
@@ -12,6 +8,13 @@
 #include <cinttypes>
 #include <unistd.h>
 #include <sys/timerfd.h>
+
+#include "glog/logging.h"
+#include "src/epoll.h"
+#include "src/channel.h"
+#include "src/event_loop.h"
+
+using namespace tinyreactor;
 
 typedef std::function<void()> TimerCallback;
 

@@ -14,12 +14,15 @@
 #include <fcntl.h>
 #include <sys/uio.h>
 
+#include "glog/logging.h"
+
 using namespace tinyreactor;
 
 int sockets::createSocket() {
     int socketfd = ::socket(AF_INET,
                             SOCK_STREAM,
                             0);
+    LOG(INFO) << "createSocket() create socketfd = " << socketfd;
     if (socketfd < 0) {
         std::fprintf(stderr, "sockets::createSocket() occur error.\n");
     }

@@ -26,6 +26,7 @@ int createTimerfd() {
     // FD_CLOEXEC?有何用?
     int timerfd = ::timerfd_create(CLOCK_MONOTONIC,
                                    TFD_NONBLOCK | TFD_CLOEXEC);
+    LOG(INFO) << "createTimerfd() create timerfd = " << timerfd;
     if (timerfd < 0) {
         LOG(FATAL) << "Failed in timerfd_create";
     }

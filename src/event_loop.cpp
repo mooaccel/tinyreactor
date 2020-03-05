@@ -17,6 +17,7 @@ using namespace tinyreactor;
 
 int createEventfd() {
     int evtfd = ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
+    LOG(INFO) << "createEventfd() create eventfd = " << evtfd;
     if (evtfd < 0) {
         std::cerr << "Failed in eventfd";
         std::terminate();
