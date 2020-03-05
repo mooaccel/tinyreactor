@@ -8,6 +8,7 @@
 #include <memory>
 #include <mutex>
 
+#include "glog/logging.h"
 #include "channel.h"
 #include "epoll.h"
 #include "util/timer_queue.h"
@@ -39,7 +40,8 @@ void EventLoop::loop() {
     while (true) {
         activeChannels_.clear();
         poller_->poll(nullptr, activeChannels_);
-        std::printf("poller->poll return\n");
+        //printf("In EventLoop::loop(), poller->poll return\n");
+        LOG(INFO) << "In EventLoop::loop(), poller->poll return\n";
         for (auto curChannel : activeChannels_) {
             curChannel->handleEvent();
         }

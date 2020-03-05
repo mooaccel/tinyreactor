@@ -8,6 +8,7 @@
 #include <cstring>
 #include <vector>
 
+#include "glog/logging.h"
 #include "channel.h"
 
 using namespace tinyreactor;
@@ -52,7 +53,7 @@ void Epoll::updateChannelInEpoll(Channel *channel) {
 
     if (::epoll_ctl(epfd_, EPOLL_CTL_ADD, fd, &event) == -1)  // < 0的其他返回值?
     {
-        std::fprintf(stderr, "epoll_ctl occur error in Epoll::updateChannelInEpoll()\n ");
+        LOG(INFO) << "epoll_ctl occur error in Epoll::updateChannelInEpoll()\n";
         // 应该终止吧?
     }
 }
@@ -60,7 +61,7 @@ void Epoll::updateChannelInEpoll(Channel *channel) {
 void Epoll::removeChannelInEpoll(Channel *channel) {
     int fd = channel->fd();
     if (::epoll_ctl(epfd_, EPOLL_CTL_DEL, fd, nullptr) == -1) {
-        std::fprintf(stderr, "epoll_ctl occur error in Epoll::updateChannelInEpoll()\n ");
+        LOG(INFO) << "epoll_ctl occur error in Epoll::updateChannelInEpoll()\n";
         // 应该终止吧?
     }
 }

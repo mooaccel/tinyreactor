@@ -69,9 +69,15 @@ class EchoServer {
 };
 
 int main(int argc, char *argv[]) {
+    // 不输出至logfile, 输出到stderr
+    FLAGS_logtostderr = 1;
+    // >=0级的log都输出出来
+    FLAGS_minloglevel = 0;
+
     ::google::InitGoogleLogging(argv[0]);
+    LOG(INFO) << "echo server launch";
     EventLoop loop;
-    InetAddress listenAddr("127.0.0.1", 9878);
+    InetAddress listenAddr("127.0.0.1", 9888);
     EchoServer server(&loop, listenAddr);
     server.startListen();
 
