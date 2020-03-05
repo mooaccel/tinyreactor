@@ -62,7 +62,7 @@ void Socket::bindAddress(const InetAddress &listenaddr) {
     int ret = ::bind(socket_fd_, listenaddr.getSockAddr(), static_cast<socklen_t>(sizeof(struct sockaddr_in)));
     if (ret < 0)
     {
-        fprintf(stderr, "Socket::bindAddress\n");
+        fprintf(stderr, "Socket::bindAddress error\n");
     }
 }
 

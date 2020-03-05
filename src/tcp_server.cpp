@@ -9,6 +9,7 @@
 #include <string>
 #include <functional>
 
+#include "glog/logging.h"
 #include "acceptor.h"
 #include "event_loop.h"
 #include "inet_address.h"
@@ -36,7 +37,7 @@ void TcpServer::newConnection(int connfd, const InetAddress &peerAddr) {
     // 确保在监听fd所在的loop中执行TcpServer::newConnection()
     loop_->assertInLoopThread();
     // FIXME: 用glog? 要确保线程安全
-    std::cout << "TcpServer::newConnection [" << servername_
+    LOG(INFO) << "TcpServer::newConnection [" << servername_
               << "] from " << peerAddr.toIpPort();
     char buf[64];
     snprintf(buf, sizeof(buf), "-%s#%d", listenIpPort_.c_str(), nextConnId_);

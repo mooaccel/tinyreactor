@@ -2,6 +2,7 @@
 // Created by mojiajun on 2019/9/12.
 //
 
+#include "glog/logging.h"
 #include "src/tcp_server.h"
 #include "src/event_loop.h"
 #include "src/inet_address.h"
@@ -68,9 +69,9 @@ class EchoServer {
 };
 
 int main(int argc, char *argv[]) {
-    std::cout << "sizeof TcpConnection = " << sizeof(TcpConnection);
+    ::google::InitGoogleLogging(argv[0]);
     EventLoop loop;
-    InetAddress listenAddr("127.0.0.1", 9877);
+    InetAddress listenAddr("127.0.0.1", 9878);
     EchoServer server(&loop, listenAddr);
     server.startListen();
 
