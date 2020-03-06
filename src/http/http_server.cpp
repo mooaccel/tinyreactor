@@ -40,7 +40,7 @@ void HttpServer::onConnection(const TcpConnectionPtr &conn) {
 void HttpServer::onMessage(const TcpConnectionPtr &conn,
                            Buffer *buf) {
     LOG(INFO) << "HttpServer::onMessage() callback";
-
+    LOG(INFO) << "http server receive byte datas is :\n" << buf->retrieveAllAsStringButNotModiftBufferState();
     // 有消息到来, 得到目前的上下文
     // HttpContext *ctx类型
     auto ctx = std::any_cast<HttpContext>(conn->getMutableContext());

@@ -15,6 +15,7 @@
 using namespace tinyreactor;
 using namespace tinyreactor::sockets;
 
+/// 返回连接套接字
 int Socket::accept(InetAddress *peeraddr) {  // 成功之后把对端的信息填入到peeraddr
     struct sockaddr_in cliaddr;
     socklen_t cliaddrlen = static_cast<socklen_t>(sizeof cliaddr);

@@ -22,7 +22,7 @@ int sockets::createSocket() {
     int socketfd = ::socket(AF_INET,
                             SOCK_STREAM,
                             0);
-    LOG(INFO) << "createSocket() create socketfd = " << socketfd;
+    LOG(INFO) << "createSocket() create socketfd(use in listen later) = " << socketfd;
     if (socketfd < 0) {
         std::fprintf(stderr, "sockets::createSocket() occur error.\n");
     }

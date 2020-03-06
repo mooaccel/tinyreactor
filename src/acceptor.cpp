@@ -29,6 +29,7 @@ Acceptor::~Acceptor() {
 
 void Acceptor::handleRead() {
     InetAddress peerAddr;
+    // 获得连接套接字
     int connfd = listenSocket_.accept(&peerAddr);
     newConnectionCallback_(connfd, peerAddr);
 }

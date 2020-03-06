@@ -57,6 +57,7 @@ class Buffer {
   }
 
   /// 获取len个字节从readableBytes中
+  /// 这里只是修改Buffer的内部状态
   void retrieve(size_t len) {
       assert(len <= readableBytes());
       if (len < readableBytes()) {
@@ -103,6 +104,13 @@ class Buffer {
 
   std::string retrieveAllAsString() {
       return retrieveAsString(readableBytes());
+  }
+
+  std::string retrieveAllAsStringButNotModiftBufferState() {
+      size_t len = readableBytes();
+      assert(len <= readableBytes());
+      std::string result(peek(), len);
+      return result;
   }
 
   std::string retrieveAsString(size_t len) {

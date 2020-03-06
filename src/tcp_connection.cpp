@@ -40,8 +40,8 @@ TcpConnection::TcpConnection(EventLoop *loop,
     //    std::bind(&TcpConnection::handleClose, this));
     //channel_->setErrorCallback(
     //    std::bind(&TcpConnection::handleError, this));
-    std::cout << "TcpConnection::ctor[" << connname_ << "] at " << this
-              << " fd=" << connfd;
+    LOG(INFO) << "TcpConnection::ctor " << connname_ << " at this pointer = " << this
+              << " connfd =" << connfd;
 }
 
 // 在TcpServer::newConnection()的最后调用它
