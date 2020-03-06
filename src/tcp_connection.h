@@ -8,6 +8,7 @@
 #include "buffer.h"
 #include "callback.h"
 
+#include <any>
 #include <string>
 #include <memory>
 #include <vector>
@@ -29,8 +30,10 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
                 const InetAddress &peerAddr);
   ~TcpConnection() = default;
 
-  void send(const void *data, size_t len);
+  /// 提供给用户从TcpConnection发送字节流的接口
   void send(const std::string &message);
+  void send(const void *data, size_t len);
+
   void connectEstablished();
   void handleRead();
   void handleWrite();
@@ -38,12 +41,30 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
       return connname_;
   }
 
+  void setContext(const std::any &context) { tcp_conn_ctx_ = context; }
+
+  const std::any &getContext() const { return tcp_conn_ctx_; }
+
+  std::any *getMutableContext() { return &tcp_conn_ctx_; }
+
   void setConnectionCallback(const ConnectionCallback &cb) { connectionCallback_ = cb; }
   void setMessageCallback(const MessageCallback &cb) { messageCallback_ = cb; }
 
  private:
+  /// 从TcpConnection这个角度看Tcp的连接状态
+  enum StateE { kDisconnected, kConnecting, kConnected, kDisconnecting };
+
+  /// TcpConnection的一系列send函数最终要调用sendInLoop
+  /// 需要确保线程安全
+  void sendInLoop(const std::string &message);
+  void sendInLoop(const void *data, size_t len);
+
+  void setState(StateE state) { state_ = state; }
+
   EventLoop *ioloop_;
   const std::string connname_;
+  /// 怎么确保这个状态的修改线程安全?
+  StateE state_;
   std::unique_ptr<Socket> socket_;  // Wrapper of connfd
   std::unique_ptr<Channel> channel_;  // Channel corresponding to connfd
   const InetAddress &localAddr_;
@@ -53,6 +74,7 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
   MessageCallback messageCallback_;
   Buffer inputBuffer_;
   Buffer outputBuffer_;
+  std::any tcp_conn_ctx_;
 };
 
 using TcpConnectionPtr = std::shared_ptr<TcpConnection>;

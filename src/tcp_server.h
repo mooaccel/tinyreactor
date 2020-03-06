@@ -36,6 +36,12 @@ class TcpServer {
   void setMessageCallback(const MessageCallback &cb) {
       messageCallback_ = cb;
   }
+  std::string ipPort() const {
+      return listenIpPort_;
+  }
+  std::string tcp_server_name() const {
+      return servername_;
+  }
 
  private:
   /// Acceptor所在的eventloop

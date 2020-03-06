@@ -50,19 +50,19 @@ class Buffer {
       writerIndex_ = kCheapPrepend;
   }
 
-  void append(const char * /*restrict*/ data, size_t len) {
+  void append(const char *data, size_t len) {
       ensureWritableBytes(len);
       std::copy(data, data + len, beginWrite());
       hasWritten(len);
   }
 
+  void append(const std::string &str) {
+      append(str.data(), str.size());
+  }
+
   void hasWritten(size_t len) {
       assert(len <= writableBytes());
       writerIndex_ += len;
-  }
-
-  void append(const void * /*restrict*/ data, size_t len) {
-      append(static_cast<const char *>(data), len);
   }
 
   void ensureWritableBytes(size_t len) {

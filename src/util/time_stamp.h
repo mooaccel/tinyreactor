@@ -16,6 +16,8 @@ class Timestamp {
   ~Timestamp() = default;
 
   std::string toString() const;
+  std::string toFormattedString(bool showMicroseconds = true) const;
+
   int64_t microSecondsSinceEpoch() const {
       return microSecondsSinceEpoch_;
   }

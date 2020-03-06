@@ -32,9 +32,6 @@ class Channel {
   void set_fd(int fd) { fd_ = fd; }
   int fd() const { return fd_; }
 
-  bool isMonitoringWritable() { return events_ & kWriteEvent; }
-  bool isMonitoringReadable() { return events_ & kReadEvent; }
-
   void remove();  // 这个API设计的...感觉并不好
 
   void enableReading() {
@@ -57,8 +54,9 @@ class Channel {
       events_ = kNoneEvent;
       update();
   }
-  bool isWriting() const { return events_ & kWriteEvent; }
-  bool isReading() const { return events_ & kReadEvent; }
+
+  bool isMonitoringWritable() { return events_ & kWriteEvent; }
+  bool isMonitoringReadable() { return events_ & kReadEvent; }
 
   bool isNoneEvent() const;
 

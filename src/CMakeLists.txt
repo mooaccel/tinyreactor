@@ -14,6 +14,10 @@ set(TINYREACTOR_LIB_SRCS
         tcp_connection.cpp
         inet_address.cpp
         buffer.cpp
+        ./http/http_server.cpp
+        ./http/http_context.cpp
+        ./http/http_request.cpp
+        ./http/http_reponse.cpp
         ./util/time_stamp.cpp
         ./util/timer.cpp
         ./util/timer_queue.cpp
