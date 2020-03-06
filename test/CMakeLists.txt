@@ -67,7 +67,7 @@ target_link_libraries(timer_test ${TEST_SRC_LINK})
 target_link_libraries(event_loop_test ${TEST_SRC_LINK})
 target_link_libraries(timer_queue_test ${TEST_SRC_LINK})
 target_link_libraries(eventloop_thread_test ${TEST_SRC_LINK})
-target_link_libraries(http_server_test ${HTTP_SERVER_TEST_FILES})
+target_link_libraries(http_server_test ${TEST_SRC_LINK})
 
 #add_executable(echoClient_test echoClient_test.cpp)
 #target_link_libraries(echoClient_test single_thread_reactor)
