@@ -4,12 +4,14 @@
 #ifndef SINGLE_THREAD_REACTOR_SRC_BUFFER_H_
 #define SINGLE_THREAD_REACTOR_SRC_BUFFER_H_
 
+#include <algorithm>
 #include <cassert>
 #include <string>
 #include <vector>
 
 namespace tinyreactor {
 
+/// Buffer的有些细节还需要探究
 class Buffer {
  public:
   static const size_t kCheapPrepend = 8;
@@ -34,8 +36,27 @@ class Buffer {
       return buffer_.size() - writerIndex_;
   }
 
+  /// 返回指向readable范围内的第一个字节的指针
   const char *peek() const { return begin() + readerIndex_; }
 
+  /// 功能描述?
+  /// TODO, 单元测试, 待写
+  const char *findCRLF() const {
+      // FIXME: replace with memmem()?
+      // 在[peek(), beginWrite())范围内搜寻
+      const char *crlf = std::search(peek(), beginWrite(), kCRLF, kCRLF + 2);
+      return crlf == beginWrite() ? nullptr : crlf;
+  }
+
+  const char *findCRLF(const char *start) const {
+      assert(peek() <= start);
+      assert(start <= beginWrite());
+      // FIXME: replace with memmem()?
+      const char *crlf = std::search(start, beginWrite(), kCRLF, kCRLF + 2);
+      return crlf == beginWrite() ? nullptr : crlf;
+  }
+
+  /// 获取len个字节从readableBytes中
   void retrieve(size_t len) {
       assert(len <= readableBytes());
       if (len < readableBytes()) {
@@ -43,6 +64,14 @@ class Buffer {
       } else {
           retrieveAll();
       }
+  }
+
+  // end相当于是尾后指针?它指向的位置不需要获取吧?
+  void retrieveUntil(const char* end)
+  {
+      assert(peek() <= end);
+      assert(end <= beginWrite());
+      retrieve(end - peek());
   }
 
   void retrieveAll() {
@@ -84,9 +113,13 @@ class Buffer {
   }
 
   char *beginWrite() { return begin() + writerIndex_; }
+  const char *beginWrite() const { return begin() + writerIndex_; }
+
+  /// TODO
   ssize_t readFd(int fd, int *savedErrno);
 
  private:
+  /// 返回指向第一个元素的指针
   char *begin() { return &*buffer_.begin(); }
 
   const char *begin() const { return &*buffer_.begin(); }
@@ -111,6 +144,9 @@ class Buffer {
   std::vector<char> buffer_;
   size_t readerIndex_;
   size_t writerIndex_;
+
+  /// TODO, 添加描述
+  static const char kCRLF[];
 };
 
 }

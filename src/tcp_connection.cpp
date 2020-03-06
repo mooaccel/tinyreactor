@@ -101,7 +101,7 @@ void TcpConnection::send(const void *data, size_t len) {
 }
 
 void TcpConnection::send(const std::string &message) {
-    if (state_ != kConnected)
+    if (!isConnected())
         return;
     // 如果是在ioloop调用的send
     // 那么直接调用sendInLoop发送这部分数据
@@ -113,11 +113,27 @@ void TcpConnection::send(const std::string &message) {
         //    std::bind(&TcpConnection::sendInLoop,
         //              message));
         //??
-        void (TcpConnection::*fp)(const std::string& message) = &TcpConnection::sendInLoop;
+        void (TcpConnection::*fp)(const std::string &message) = &TcpConnection::sendInLoop;
         ioloop_->runInLoop(
             std::bind(fp,
                       this,     // FIXME
                       message));
+        //std::forward<string>(message)));
+    }
+}
+
+void TcpConnection::send(Buffer *buf) {
+    if (!isConnected())
+        return;
+    if (ioloop_->isInLoopThread()) {
+        sendInLoop(buf->peek(), buf->readableBytes());
+        buf->retrieveAll();
+    } else {
+        void (TcpConnection::*fp)(const std::string &message) = &TcpConnection::sendInLoop;
+        ioloop_->runInLoop(
+            std::bind(fp,
+                      this,
+                      buf->retrieveAllAsString()));
         //std::forward<string>(message)));
     }
 }
@@ -180,3 +196,4 @@ void TcpConnection::sendInLoop(const void *data, size_t len) {
 void TcpConnection::sendInLoop(const std::string &message) {
     sendInLoop(message.data(), message.size());
 }
+

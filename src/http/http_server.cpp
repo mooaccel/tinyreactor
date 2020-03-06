@@ -28,9 +28,13 @@ void HttpServer::startListen() {
     server_.startListen();
 }
 
-void HttpServer::onConnection(const TcpConnectionPtr conn) {
+void HttpServer::onConnection(const TcpConnectionPtr &conn) {
     LOG(INFO) << "HttpServer::onConnection() callback";
-    conn->setContext();
+    // 正常情况下, TcpConnection::connectEstablished()最后回调它的时候, 状态已经是kConnected了.
+    if (!conn->isConnected()) {
+        LOG(ERROR) << "TcpConnection not in kConnected状态";
+    }
+    conn->setContext(HttpContext());
 }
 
 void HttpServer::onMessage(const TcpConnectionPtr &conn,
@@ -38,7 +42,8 @@ void HttpServer::onMessage(const TcpConnectionPtr &conn,
     LOG(INFO) << "HttpServer::onMessage() callback";
 
     // 有消息到来, 得到目前的上下文
-    HttpContext *ctx = std::any_cast<HttpContext>(conn->getMutableContext());
+    // HttpContext *ctx类型
+    auto ctx = std::any_cast<HttpContext>(conn->getMutableContext());
 
     // 处理buf里的字节数据流
     if (!ctx->parseRequestFromBuffer(buf)) {
@@ -66,10 +71,11 @@ void HttpServer::onRequest(const TcpConnectionPtr &conn,
     Buffer buf;
     // 把response对象序列化到buf里面
     response.appendToBuffer(&buf);
-    // 然后用conn发送这个buf
+    // 然后用conn发送这个buf里的所有readable范围内的字节
     conn->send(&buf);
     // 如果用户设置了关闭连接
     if (response.closeConnection()) {
+        // TODO, 先不考虑关闭
         //conn->shutdown();
     }
 }

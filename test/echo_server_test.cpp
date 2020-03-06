@@ -2,17 +2,14 @@
 // Created by mojiajun on 2019/9/12.
 //
 
+#include <iostream>
+
 #include "glog/logging.h"
 #include "src/tcp_server.h"
 #include "src/event_loop.h"
 #include "src/inet_address.h"
 #include "src/tcp_connection.h"
 
-#include <iostream>
-#include <utility>
-
-#include <stdio.h>
-#include <unistd.h>
 
 using std::placeholders::_1;
 using std::placeholders::_2;
@@ -50,8 +47,9 @@ class EchoServer {
   // 怎么确保回调收上来的是完整的数据报文?
   void onMessage(const TcpConnectionPtr &conn, Buffer *buf) {
       std::string msg(buf->retrieveAllAsString());
-      std::cout << msg << '\n';
-      std::cout << conn->conname() << " recv " << msg.size() << " bytes" << '\n';
+      LOG(INFO) << "echo server receive: " << msg << '\n';
+      LOG(INFO) << conn->conname() << " recv " << msg.size() << " bytes" << '\n';
+      conn->send(msg);
       //if (msg == "exit\n")
       //{
       //    conn->send("bye\n");
@@ -61,7 +59,6 @@ class EchoServer {
       //{
       //    loop_->quit();
       //}
-      conn->send(msg);
   }
 
   EventLoop *loop_;

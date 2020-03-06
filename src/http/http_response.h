@@ -1,8 +1,8 @@
 //
 // Created by mojiajun on 2020/3/6.
 //
-#ifndef TINYREACTOR_SRC_HTTP_HTTP_REPONSE_H_
-#define TINYREACTOR_SRC_HTTP_HTTP_REPONSE_H_
+#ifndef TINYREACTOR_SRC_HTTP_HTTP_RESPONSE_H_
+#define TINYREACTOR_SRC_HTTP_HTTP_RESPONSE_H_
 
 #include <string>
 #include <map>
@@ -52,4 +52,4 @@ class HttpResponse {
 };
 
 }
-#endif //TINYREACTOR_SRC_HTTP_HTTP_REPONSE_H_
+#endif //TINYREACTOR_SRC_HTTP_HTTP_RESPONSE_H_

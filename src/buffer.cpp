@@ -11,6 +11,8 @@
 
 using namespace tinyreactor;
 
+const char Buffer::kCRLF[] = "\r\n";
+
 ssize_t Buffer::readFd(int fd, int *savedErrno) {
     // saved an ioctl()/FIONREAD call to tell how much to read
     char extrabuf[65536];

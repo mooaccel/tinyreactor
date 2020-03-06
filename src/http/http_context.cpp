@@ -10,20 +10,20 @@ bool HttpContext::parseRequestFromBuffer(Buffer *buf) {
     bool ok = true;
     bool hasMore = true;
     while (hasMore) {
-        if (state_ == kExpectRequestLine) {
+        if (http_req_parse_state_ == kExpectRequestLine) {
             const char *crlf = buf->findCRLF();
             if (crlf) {
                 ok = processRequestLine(buf->peek(), crlf);
                 if (ok) {
                     buf->retrieveUntil(crlf + 2);
-                    state_ = kExpectHeaders;
+                    http_req_parse_state_ = kExpectHeaders;
                 } else {
                     hasMore = false;
                 }
             } else {
                 hasMore = false;
             }
-        } else if (state_ == kExpectHeaders) {
+        } else if (http_req_parse_state_ == kExpectHeaders) {
             const char *crlf = buf->findCRLF();
             if (crlf) {
                 const char *colon = std::find(buf->peek(), crlf, ':');
@@ -32,14 +32,14 @@ bool HttpContext::parseRequestFromBuffer(Buffer *buf) {
                 } else {
                     // empty line, end of header
                     // FIXME:
-                    state_ = kGotAll;
+                    http_req_parse_state_ = kGotAll;
                     hasMore = false;
                 }
                 buf->retrieveUntil(crlf + 2);
             } else {
                 hasMore = false;
             }
-        } else if (state_ == kExpectBody) {
+        } else if (http_req_parse_state_ == kExpectBody) {
             // FIXME:
         }
     }

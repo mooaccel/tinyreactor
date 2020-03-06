@@ -17,7 +17,7 @@ set(TINYREACTOR_LIB_SRCS
         ./http/http_server.cpp
         ./http/http_context.cpp
         ./http/http_request.cpp
-        ./http/http_reponse.cpp
+        ./http/http_response.cpp
         ./util/time_stamp.cpp
         ./util/timer.cpp
         ./util/timer_queue.cpp

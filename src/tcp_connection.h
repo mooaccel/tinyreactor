@@ -33,6 +33,8 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
   /// 提供给用户从TcpConnection发送字节流的接口
   void send(const std::string &message);
   void send(const void *data, size_t len);
+  /// 把buf里的readable范围内的字节发送出去
+  void send(Buffer* buf);
 
   void connectEstablished();
   void handleRead();
@@ -40,6 +42,8 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
   const std::string &conname() const {
       return connname_;
   }
+  bool isConnected() const { return state_ == kConnected; }
+  bool isDisconnected() const { return state_ == kDisconnected; }
 
   void setContext(const std::any &context) { tcp_conn_ctx_ = context; }
 
