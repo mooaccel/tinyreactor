@@ -16,6 +16,7 @@ class EventLoopThread {
  public:
   EventLoopThread();
   ~EventLoopThread();
+  // 修改为startEventLoop??
   EventLoop *getEventLoop();
 
  private:
